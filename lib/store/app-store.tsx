@@ -7,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react"
 import { FREE_PLAN, PRO_PLAN, projectUrl, toSlug } from "@/lib/config"
 import type { AppState, DraftDeploy, Invoice, PlanId, Project, User } from "@/lib/store/types"
@@ -24,6 +25,45 @@ const emptyState: AppState = {
 
 function newId(prefix: string) {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`
+}
+
+function readStorage(): AppState {
+  if (typeof window === "undefined") return emptyState
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY)
+    if (!raw) return emptyState
+    return { ...emptyState, ...(JSON.parse(raw) as AppState) }
+  } catch {
+    return emptyState
+  }
+}
+
+let memory: AppState = emptyState
+const listeners = new Set<() => void>()
+
+function emit() {
+  listeners.forEach((listener) => listener())
+}
+
+function persist(next: AppState) {
+  memory = next
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+  }
+  emit()
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+
+function getSnapshot(): AppState {
+  return memory
+}
+
+function getServerSnapshot(): AppState {
+  return emptyState
 }
 
 type AppStore = AppState & {
@@ -46,26 +86,13 @@ type AppStore = AppState & {
 const AppStoreContext = createContext<AppStore | null>(null)
 
 export function AppStoreProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<AppState>(emptyState)
+  const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const parsed = JSON.parse(raw) as AppState
-        setState({ ...emptyState, ...parsed })
-      }
-    } catch {
-      setState(emptyState)
-    }
+    persist(readStorage())
     setReady(true)
   }, [])
-
-  useEffect(() => {
-    if (!ready) return
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  }, [ready, state])
 
   const signup = useCallback((input: { name: string; email: string }) => {
     const user: User = {
@@ -73,38 +100,38 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       email: input.email.trim().toLowerCase(),
       twoFactorEnabled: false,
     }
-    setState((prev) => ({ ...prev, user, resetEmail: null }))
+    persist({ ...getSnapshot(), user, resetEmail: null })
   }, [])
 
   const login = useCallback((input: { email: string }) => {
     const email = input.email.trim().toLowerCase()
-    setState((prev) => ({
+    const prev = getSnapshot()
+    persist({
       ...prev,
-      user: prev.user?.email === email
-        ? prev.user
-        : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false },
-    }))
+      user:
+        prev.user?.email === email
+          ? prev.user
+          : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false },
+    })
   }, [])
 
   const logout = useCallback(() => {
-    setState((prev) => ({ ...prev, user: null, draft: null }))
+    persist({ ...getSnapshot(), user: null, draft: null })
   }, [])
 
   const setTwoFactor = useCallback((enabled: boolean) => {
-    setState((prev) =>
-      prev.user ? { ...prev, user: { ...prev.user, twoFactorEnabled: enabled } } : prev,
-    )
+    const prev = getSnapshot()
+    if (!prev.user) return
+    persist({ ...prev, user: { ...prev.user, twoFactorEnabled: enabled } })
   }, [])
 
   const setResetEmail = useCallback((email: string) => {
-    setState((prev) => ({ ...prev, resetEmail: email }))
+    persist({ ...getSnapshot(), resetEmail: email })
   }, [])
 
   const setDraft = useCallback((draft: DraftDeploy | null) => {
-    setState((prev) => ({ ...prev, draft }))
+    persist({ ...getSnapshot(), draft })
   }, [])
-
-  const canCreateFreeProject = state.plan === "pro" || state.projects.length < FREE_PLAN.projects
 
   const createProject = useCallback((input: DraftDeploy & { fail?: boolean }) => {
     const now = new Date().toISOString()
@@ -118,35 +145,39 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       region: "lagos-edge",
       url: projectUrl(slug),
       status: input.fail ? "failed" : "queued",
-      stage: input.fail ? "build" : "build",
+      stage: "build",
       createdAt: now,
       updatedAt: now,
       retryUsed: false,
       failReason: input.fail ? "Build failed: install exited with code 1" : undefined,
     }
-    setState((prev) => ({
+    const prev = getSnapshot()
+    persist({
       ...prev,
       draft: input,
       projects: [project, ...prev.projects.filter((item) => item.id !== project.id)],
-    }))
+    })
     return project
   }, [])
 
   const updateProject = useCallback((id: string, patch: Partial<Project>) => {
-    setState((prev) => ({
+    const prev = getSnapshot()
+    persist({
       ...prev,
       projects: prev.projects.map((project) =>
         project.id === id
           ? { ...project, ...patch, updatedAt: new Date().toISOString() }
           : project,
       ),
-    }))
+    })
   }, [])
 
   const retryDeploy = useCallback((id: string) => {
+    const prev = getSnapshot()
     let next: Project | null = null
-    setState((prev) => {
-      const projects = prev.projects.map((project) => {
+    persist({
+      ...prev,
+      projects: prev.projects.map((project) => {
         if (project.id !== id) return project
         next = {
           ...project,
@@ -157,8 +188,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
           updatedAt: new Date().toISOString(),
         }
         return next
-      })
-      return { ...prev, projects }
+      }),
     })
     return next
   }, [])
@@ -173,17 +203,16 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       status: "paid",
       provider: "paystack",
     }
-    setState((prev) => {
-      const alreadyPaid = prev.invoices.some(
-        (item) => item.status === "paid" && item.amountKobo === PRO_PLAN.amountKobo,
-      )
-      return {
-        ...prev,
-        plan: "pro" as PlanId,
-        invoices: alreadyPaid
-          ? prev.invoices
-          : [invoice, ...prev.invoices.filter((item) => item.status !== "failed")],
-      }
+    const prev = getSnapshot()
+    const alreadyPaid = prev.invoices.some(
+      (item) => item.status === "paid" && item.amountKobo === PRO_PLAN.amountKobo,
+    )
+    persist({
+      ...prev,
+      plan: "pro" as PlanId,
+      invoices: alreadyPaid
+        ? prev.invoices
+        : [invoice, ...prev.invoices.filter((item) => item.status !== "failed")],
     })
   }, [])
 
@@ -197,18 +226,18 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       status: "failed",
       provider: "paystack",
     }
-    setState((prev) => ({
+    const prev = getSnapshot()
+    persist({
       ...prev,
       invoices: [invoice, ...prev.invoices.filter((item) => item.status !== "failed")],
-    }))
+    })
   }, [])
 
   const keepFree = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      plan: "free",
-    }))
+    persist({ ...getSnapshot(), plan: "free" })
   }, [])
+
+  const canCreateFreeProject = state.plan === "pro" || state.projects.length < FREE_PLAN.projects
 
   const value = useMemo<AppStore>(
     () => ({
