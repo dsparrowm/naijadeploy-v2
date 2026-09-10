@@ -19,10 +19,10 @@ Writing objects: 100% (15/15), done.
   {
     number: "03",
     title: "Go Live Instantly",
-    description: "Your app is deployed to our African edge network in seconds. Share your .naija.app URL with the world.",
+    description: "Your app is deployed to Lagos Edge. Share your {project}.naijadeploy.app URL.",
     code: `✓ Build completed in 23s
-✓ Deployed to edge network
-✓ https://my-app.naija.app`,
+✓ Deployed to Lagos Edge
+✓ https://my-app.naijadeploy.app`,
   },
 ]
 
