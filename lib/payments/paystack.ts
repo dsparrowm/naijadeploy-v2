@@ -96,16 +96,40 @@ export class PaystackProvider implements PaymentProvider {
     )
     const payload = (await response.json()) as {
       status: boolean
-      data?: { status?: string; amount?: number }
+      data?: {
+        status?: string
+        amount?: number
+        currency?: string
+        reference?: string
+        metadata?: { plan?: string; product?: string } | string
+      }
     }
 
-    const paid = payload.status && payload.data?.status === "success"
+    const data = payload.data
+    let metadata: { plan?: string } | undefined
+    try {
+      metadata =
+        typeof data?.metadata === "string"
+          ? (JSON.parse(data.metadata) as { plan?: string })
+          : data?.metadata
+    } catch {
+      metadata = undefined
+    }
+    const issuedByApp = reference.startsWith("nd_pro_")
+    const paid =
+      Boolean(payload.status) &&
+      data?.status === "success" &&
+      data.amount === amountKobo &&
+      data.currency === "NGN" &&
+      metadata?.plan === "pro" &&
+      issuedByApp
+
     return {
       provider: this.id,
       demo: false,
       reference,
       status: paid ? "success" : "failed",
-      amountKobo: payload.data?.amount ?? amountKobo,
+      amountKobo: data?.amount ?? amountKobo,
     }
   }
 }

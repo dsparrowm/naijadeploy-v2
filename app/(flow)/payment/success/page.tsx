@@ -42,14 +42,22 @@ function SuccessInner() {
         return
       }
 
-      const response = await fetch(`/api/paystack/verify?reference=${encodeURIComponent(reference)}`)
-      const payload = (await response.json()) as { status?: string }
-      if (cancelled) return
-      if (payload.status === "success") {
-        upgradeToPro(reference)
-        setStatus("ok")
-      } else {
-        setStatus("error")
+      try {
+        const response = await fetch(`/api/paystack/verify?reference=${encodeURIComponent(reference)}`)
+        if (!response.ok) {
+          if (!cancelled) setStatus("error")
+          return
+        }
+        const payload = (await response.json()) as { status?: string }
+        if (cancelled) return
+        if (payload.status === "success") {
+          upgradeToPro(reference)
+          setStatus("ok")
+        } else {
+          setStatus("error")
+        }
+      } catch {
+        if (!cancelled) setStatus("error")
       }
     }
     run()
