@@ -7,15 +7,15 @@ import { FREE_PLAN, PRO_PLAN, SCALE_PLAN } from "@/lib/config"
 import { formatNaira } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
-const shell = "mx-auto w-full max-w-[1280px] px-6 sm:px-8"
+const shell = "mx-auto w-full max-w-[1200px] px-5 md:px-8 xl:px-12"
 
 export function LandingPage() {
   return (
     <div className="flex min-h-svh flex-col bg-background text-foreground">
       <header className="sticky top-0 z-20 border-b border-border bg-background/95">
-        <div className={cn(shell, "flex h-[52px] items-center justify-between")}>
+        <div className={cn(shell, "flex h-[58px] items-center justify-between")}>
           <Logo href="/" />
-          <nav className="hidden items-center gap-7 text-[13px] text-muted-foreground md:flex">
+          <nav className="hidden items-center gap-8 text-[13px] text-muted-foreground md:flex">
             <Link href="#features" className="hover:text-foreground">
               Features
             </Link>
@@ -26,7 +26,7 @@ export function LandingPage() {
               Docs
             </Link>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3.5">
             <Button asChild variant="ghost" size="sm">
               <Link href="/login">Log in</Link>
             </Button>
@@ -37,30 +37,30 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main className={cn(shell, "flex flex-1 flex-col pb-2 pt-3")}>
-        <div className="grid items-center gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-9">
+      <main className={cn(shell, "flex flex-1 flex-col pb-11 pt-11")}>
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
           <div>
-            <p className="inline-flex rounded-[7px] border border-primary/35 bg-primary/10 px-2 py-0.5 text-[12px] text-primary">
+            <p className="mb-4 inline-flex rounded-[7px] border border-primary/35 bg-primary/10 px-2 py-0.5 text-[12px] text-primary">
               Lagos Edge · Pay in Naira
             </p>
-            <h1 className="mt-2 text-[32px] font-semibold leading-[1.1] tracking-[-0.03em] text-foreground">
+            <h1 className="text-[36px] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
               Deploy your apps in <span className="text-primary">naira.</span>
               <br />
               Built for builders in Lagos.
             </h1>
-            <p className="mt-2 max-w-[540px] text-[14px] leading-snug text-muted-foreground">
+            <p className="mt-3 max-w-[520px] text-[15px] leading-[1.55] text-muted-foreground">
               First deploy is free. Push from GitHub or GitLab — we build, host, and
               serve from Lagos Edge. Upgrade only when you need more.
             </p>
-            <div className="mt-2.5 flex flex-wrap items-center gap-2">
-              <Button asChild size="sm">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Button asChild size="lg">
                 <Link href="/signup">Start Free</Link>
               </Button>
-              <Button asChild variant="outline" size="sm">
+              <Button asChild variant="outline" size="lg">
                 <Link href="#">Docs</Link>
               </Button>
             </div>
-            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
+            <p className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-1 text-[12px] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <PaystackGlyph />
                 Paystack only
@@ -72,7 +72,7 @@ export function LandingPage() {
           <TerminalCard />
         </div>
 
-        <section id="features" className="mt-3 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <section id="features" className="mt-11 grid grid-cols-2 gap-4 lg:grid-cols-4">
           <FeatureCard label="Edge" title="Lagos Edge" body="West Africa · low RTT" />
           <FeatureCard
             label="Billing"
@@ -96,60 +96,58 @@ export function LandingPage() {
           />
         </section>
 
-        <section className="mt-3 flex flex-col gap-3">
-          <div id="how-it-works" className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-              How it works
-            </p>
-            <div className="mt-2 grid grid-cols-1 gap-2.5 min-[720px]:grid-cols-3">
-              <StepCard n={1} title="Push code" body="Connect GitHub or GitLab." />
-              <StepCard n={2} title="Build" body="We detect framework & deploy." />
-              <StepCard n={3} title="Live" body="URL on Lagos Edge · Free." />
-            </div>
+        <section id="how-it-works" className="mt-13">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            How it works
+          </p>
+          <div className="mt-4 grid grid-cols-1 gap-3.5 min-[720px]:grid-cols-3">
+            <StepCard n={1} title="Push code" body="Connect GitHub or GitLab." />
+            <StepCard n={2} title="Build" body="We detect framework & deploy." />
+            <StepCard n={3} title="Live" body="URL on Lagos Edge · Free." />
           </div>
+        </section>
 
-          <div id="pricing" className="min-w-0">
-            <div className="flex items-baseline justify-between gap-3">
-              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-                Pricing
-              </p>
-              <p className="text-[12px] text-muted-foreground">NGN · billed via Paystack</p>
-            </div>
-            <div className="mt-2 grid grid-cols-1 gap-2.5 min-[720px]:grid-cols-3">
-              <PlanCard
-                name="Free"
-                price={formatNaira(FREE_PLAN.priceNaira)}
-                features={["1 project · Lagos Edge", "Shared compute", "*.naijadeploy.app"]}
-                footnote="forever for first project"
-                cta="Start Free"
-                href="/signup"
-              />
-              <PlanCard
-                name="Pro"
-                price={formatNaira(PRO_PLAN.priceNaira)}
-                period="/mo"
-                popular
-                features={["Custom domains", "More build minutes", "Priority support"]}
-                footnote="via Paystack"
-                cta="Go Pro"
-                href="/signup"
-              />
-              <PlanCard
-                name="Scale"
-                price={formatNaira(SCALE_PLAN.priceNaira)}
-                period="/mo"
-                features={["Higher limits", "Dedicated capacity", "Sales-assisted"]}
-                footnote="after Pro"
-                cta="Coming later"
-                disabled
-              />
-            </div>
+        <section id="pricing" className="mt-11">
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              Pricing
+            </p>
+            <p className="text-[12px] text-muted-foreground">NGN · billed via Paystack</p>
+          </div>
+          <div className="mt-5 grid grid-cols-1 gap-4 min-[720px]:grid-cols-3">
+            <PlanCard
+              name="Free"
+              price={formatNaira(FREE_PLAN.priceNaira)}
+              features={["1 project · Lagos Edge", "Shared compute", "*.naijadeploy.app"]}
+              footnote="forever for first project"
+              cta="Start Free"
+              href="/signup"
+            />
+            <PlanCard
+              name="Pro"
+              price={formatNaira(PRO_PLAN.priceNaira)}
+              period="/mo"
+              popular
+              features={["Custom domains", "More build minutes", "Priority support"]}
+              footnote="via Paystack"
+              cta="Go Pro"
+              href="/signup"
+            />
+            <PlanCard
+              name="Scale"
+              price={formatNaira(SCALE_PLAN.priceNaira)}
+              period="/mo"
+              features={["Higher limits", "Dedicated capacity", "Sales-assisted"]}
+              footnote="after Pro"
+              cta="Coming later"
+              disabled
+            />
           </div>
         </section>
       </main>
 
       <footer className="border-t border-border">
-        <div className={cn(shell, "flex h-9 items-center justify-between gap-3 text-[12px] text-muted-foreground")}>
+        <div className={cn(shell, "flex min-h-[52px] items-center justify-between gap-3 text-[12px] text-muted-foreground")}>
           <p>© 2026 naijaDeploy · Made in Lagos</p>
           <div className="flex items-center gap-5 text-primary">
             <Link href="#features" className="hover:text-primary/80">
@@ -181,22 +179,22 @@ function FeatureCard({
   body: ReactNode
 }) {
   return (
-    <div className="rounded-[7px] border border-border bg-card px-3.5 py-2">
+    <div className="rounded-[7px] border border-border bg-card px-[18px] py-4">
       <p className="text-[12px] text-muted-foreground">{label}</p>
-      <p className="mt-0.5 text-[13px] font-medium text-foreground">{title}</p>
-      <div className="mt-1 flex items-start text-[12px] text-muted-foreground">{body}</div>
+      <p className="mt-1 text-[13px] font-medium text-foreground">{title}</p>
+      <div className="mt-1.5 flex items-start text-[12px] text-muted-foreground">{body}</div>
     </div>
   )
 }
 
 function StepCard({ n, title, body }: { n: number; title: string; body: string }) {
   return (
-    <div className="rounded-[7px] border border-border bg-card px-3 py-2">
-      <span className="inline-flex size-[22px] items-center justify-center rounded-full bg-primary/15 text-[11px] font-semibold text-primary">
+    <div className="rounded-[7px] border border-border bg-card p-4">
+      <span className="inline-flex size-6 items-center justify-center rounded-full bg-primary/15 text-[11px] font-semibold text-primary">
         {n}
       </span>
-      <p className="mt-1 text-[13px] font-medium text-foreground">{title}</p>
-      <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{body}</p>
+      <p className="mt-2.5 text-[13px] font-medium text-foreground">{title}</p>
+      <p className="mt-1 text-[12px] leading-snug text-muted-foreground">{body}</p>
     </div>
   )
 }
@@ -225,7 +223,7 @@ function PlanCard({
   return (
     <div
       className={cn(
-        "relative flex h-full min-w-0 flex-col rounded-[7px] border px-3.5 py-2",
+        "relative flex h-full min-w-0 flex-col rounded-[7px] border px-5 pb-[18px] pt-5",
         popular ? "border-primary bg-primary/[0.07]" : "border-border bg-card",
       )}
     >
@@ -235,24 +233,26 @@ function PlanCard({
         </span>
       ) : null}
       <p className="text-[13px] font-medium text-foreground">{name}</p>
-      <p className="mt-1 text-[22px] font-semibold tracking-tight text-foreground">
+      <p className="mt-1.5 text-[26px] font-semibold tracking-tight text-foreground">
         {price}
         {period ? <span className="text-[12px] font-medium text-muted-foreground">{period}</span> : null}
       </p>
       {footnote ? <p className="mt-0.5 text-[12px] text-muted-foreground">{footnote}</p> : null}
-      <ul className="mt-2 space-y-1 text-[12px] text-muted-foreground">
+      <ul className="mt-2 text-[12px] text-muted-foreground">
         {features.map((item) => (
-          <li key={item}>· {item}</li>
+          <li key={item} className="py-1">
+            · {item}
+          </li>
         ))}
       </ul>
       {disabled || !href ? (
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-4">
           <Button type="button" variant="outline" size="sm" className="w-full" disabled>
             {cta}
           </Button>
         </div>
       ) : (
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-4">
           <Button asChild variant={popular ? "default" : "outline"} size="sm" className="w-full">
             <Link href={href}>{cta}</Link>
           </Button>
@@ -265,7 +265,7 @@ function PlanCard({
 function TerminalCard() {
   return (
     <div className="overflow-hidden rounded-[7px] border border-border bg-card">
-      <div className="flex items-center gap-2 border-b border-border bg-surface-2 px-3.5 py-1.5">
+      <div className="flex items-center gap-2 border-b border-border bg-surface-2 px-3.5 py-2">
         <span className="size-2 rounded-full bg-[#ef4444]" />
         <span className="size-2 rounded-full bg-[#eab308]" />
         <span className="size-2 rounded-full bg-[#22c55e]" />
@@ -273,7 +273,7 @@ function TerminalCard() {
           deploy · naija-pay-gateway
         </span>
       </div>
-      <div className="space-y-0 px-[15px] py-2.5 font-mono text-[11.5px] leading-[1.55]">
+      <div className="space-y-0.5 px-4 py-3.5 font-mono text-[11.5px] leading-[1.6]">
         <p className="text-[#7dd3fc]">$ git push naija main</p>
         <p className="text-[#737373]">→ Detected Next.js 14</p>
         <p className="text-[#737373]">→ Region: Lagos Edge</p>
