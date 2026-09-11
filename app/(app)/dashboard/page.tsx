@@ -40,7 +40,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         <h1 className="text-lg font-semibold text-foreground">Projects</h1>
         <div className="flex items-center gap-2">
           <SearchField

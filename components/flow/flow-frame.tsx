@@ -37,7 +37,7 @@ export function FlowFrame({
 
       {variant === "center" ? (
         <main className="flex flex-1 items-center justify-center px-4 py-12">
-          <div className={cn("w-full max-w-[440px]", className)}>
+          <div className={cn("w-full max-w-[480px]", className)}>
             {children}
           </div>
         </main>

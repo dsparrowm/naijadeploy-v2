@@ -71,7 +71,7 @@ function LiveInner() {
           {project.name} deployed to Lagos Edge. Spend remains {formatNaira(0)} on Free.
         </p>
         <div className="mt-4 flex items-center gap-2 rounded-[7px] border border-border bg-background px-3 py-2">
-          <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-foreground">
+          <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-foreground" title={project.url}>
             {project.url}
           </span>
           <DemoChip />
