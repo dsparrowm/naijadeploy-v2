@@ -46,7 +46,7 @@ export default function TwoFactorPage() {
               <InputOTPSlot
                 key={index}
                 index={index}
-                className="h-10 w-10 rounded-[7px] border border-border bg-background text-[13px] font-medium shadow-none first:rounded-[7px] first:border-l last:rounded-[7px] data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary/40"
+                className="h-10 w-10 rounded-[7px] border border-[#3f3f3f] bg-[#0A0A0A] text-[13px] font-medium shadow-none first:rounded-[7px] first:border-[#3f3f3f] last:rounded-[7px] data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary/40"
               />
             ))}
           </InputOTPGroup>

@@ -10,11 +10,11 @@ export function OauthRow({
 }) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      <Button type="button" variant="outline" className="h-10" onClick={onStub} title="Demo stub — use email">
+      <Button type="button" variant="outline" className="h-10" onClick={onStub}>
         <Github className="size-3.5" />
         {labels.github}
       </Button>
-      <Button type="button" variant="outline" className="h-10" onClick={onStub} title="Demo stub — use email">
+      <Button type="button" variant="outline" className="h-10" onClick={onStub}>
         <Gitlab className="size-3.5" />
         {labels.gitlab}
       </Button>

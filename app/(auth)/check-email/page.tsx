@@ -15,12 +15,16 @@ export default function CheckEmailPage() {
     <AuthFrame
       icon={<OutcomeIcon kind="mail" />}
       title="Check your email"
-      description="We sent a password reset link to"
+      description={
+        <>
+          We sent a password reset link to
+          <span className="mt-1.5 block text-[14px] font-medium text-foreground">
+            {resetEmail || "your inbox"}
+          </span>
+        </>
+      }
     >
-      <p className="text-[14px] font-medium text-foreground">
-        {resetEmail || "your inbox"}
-      </p>
-      <p className="mt-3 text-[13px] text-muted-foreground">
+      <p className="text-[13px] text-muted-foreground">
         The link expires in 30 minutes. Check spam if you don’t see it.
       </p>
       <Button

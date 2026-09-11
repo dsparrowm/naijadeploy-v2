@@ -96,8 +96,13 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    persist(readStorage())
-    setReady(true)
+    try {
+      persist(readStorage())
+    } catch (error) {
+      console.error("session hydrate failed", error)
+    } finally {
+      setReady(true)
+    }
   }, [])
 
   const signup = useCallback((input: { name: string; email: string }) => {

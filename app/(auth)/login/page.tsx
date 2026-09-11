@@ -16,9 +16,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  function onSubmit(event: FormEvent) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    login({ email })
+    const data = new FormData(event.currentTarget)
+    const nextEmail = String(data.get("email") || email).trim()
+    if (!nextEmail) return
+    login({ email: nextEmail })
     router.push("/dashboard")
   }
 
@@ -39,10 +42,11 @@ export default function LoginPage() {
       <div className="my-4">
         <OrDivider />
       </div>
-      <form onSubmit={onSubmit} className="space-y-3.5">
+      <form onSubmit={onSubmit} action="#" method="post" className="space-y-3.5">
         <Field label="Email">
           <Input
             id="email"
+            name="email"
             type="email"
             required
             value={email}
@@ -61,6 +65,7 @@ export default function LoginPage() {
         >
           <Input
             id="password"
+            name="password"
             type="password"
             required
             value={password}
