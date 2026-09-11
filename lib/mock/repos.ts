@@ -4,58 +4,59 @@ export type MockRepo = {
   private: boolean
   updatedAt: string
   language: string
+  framework: string
+  buildCommand: string
+  outputDirectory: string
   branches: string[]
   defaultBranch: string
 }
 
 export const MOCK_REPOS: MockRepo[] = [
   {
-    fullName: "oladipo/pay-api",
-    description: "Naira collections API",
+    fullName: "adewale/naija-pay-gateway",
+    description: "Paystack collections API",
     private: true,
-    updatedAt: "2h ago",
+    updatedAt: "Updated 2h ago",
     language: "TypeScript",
+    framework: "Next.js 14",
+    buildCommand: "npm run build",
+    outputDirectory: ".next",
     branches: ["main", "develop"],
     defaultBranch: "main",
   },
   {
-    fullName: "ada/market-web",
-    description: "Storefront for Lagos retailers",
-    private: false,
-    updatedAt: "1d ago",
-    language: "Next.js",
-    branches: ["main", "staging"],
-    defaultBranch: "main",
-  },
-  {
-    fullName: "kemi/logistics-app",
-    description: "Last-mile tracking",
+    fullName: "adewale/corp-frontend",
+    description: "Marketing site",
     private: true,
-    updatedAt: "3d ago",
-    language: "Go",
-    branches: ["main", "release"],
-    defaultBranch: "main",
-  },
-  {
-    fullName: "tunde/school-portal",
-    description: "Admissions and fees",
-    private: false,
-    updatedAt: "5d ago",
+    updatedAt: "Updated yesterday",
     language: "TypeScript",
-    branches: ["main"],
+    framework: "Vite",
+    buildCommand: "npm run build",
+    outputDirectory: "dist",
+    branches: ["main", "feat/auth"],
     defaultBranch: "main",
   },
   {
-    fullName: "chioma/fintech-dashboard",
-    description: "Ops console",
-    private: true,
-    updatedAt: "1w ago",
-    language: "React",
-    branches: ["main", "feat/reports"],
+    fullName: "adewale/docs-site",
+    description: "Product docs",
+    private: false,
+    updatedAt: "Updated 5d ago",
+    language: "TypeScript",
+    framework: "Astro",
+    buildCommand: "npm run build",
+    outputDirectory: "dist",
+    branches: ["main"],
     defaultBranch: "main",
   },
 ]
 
 export function findRepo(fullName: string) {
   return MOCK_REPOS.find((repo) => repo.fullName === fullName)
+}
+
+export function frameworkPreset(framework: string) {
+  if (framework.startsWith("Next.js")) {
+    return { buildCommand: "npm run build", outputDirectory: ".next" }
+  }
+  return { buildCommand: "npm run build", outputDirectory: "dist" }
 }

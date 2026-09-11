@@ -9,7 +9,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-svh bg-background">
         <AppSidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <main className="flex-1 px-6 py-6">{children}</main>
+          <main className="flex-1 px-6 py-5">{children}</main>
         </div>
       </div>
     </RequireSession>

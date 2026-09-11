@@ -10,6 +10,8 @@ import {
   useSyncExternalStore,
 } from "react"
 import { FREE_PLAN, PRO_PLAN, projectUrl, toSlug } from "@/lib/config"
+import { findRepo } from "@/lib/mock/repos"
+import { seedOverviewProjects } from "@/lib/mock/projects"
 import type { AppState, DraftDeploy, Invoice, PlanId, Project, User } from "@/lib/store/types"
 
 const STORAGE_KEY = "naijadeploy.session.v1"
@@ -94,8 +96,13 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    persist(readStorage())
-    setReady(true)
+    try {
+      persist(readStorage())
+    } catch (error) {
+      console.error("session hydrate failed", error)
+    } finally {
+      setReady(true)
+    }
   }, [])
 
   const signup = useCallback((input: { name: string; email: string }) => {
@@ -110,12 +117,14 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback((input: { email: string }) => {
     const email = input.email.trim().toLowerCase()
     const prev = getSnapshot()
+    const user: User =
+      prev.user?.email === email
+        ? prev.user
+        : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false }
     persist({
       ...prev,
-      user:
-        prev.user?.email === email
-          ? prev.user
-          : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false },
+      user,
+      projects: prev.projects.length > 0 ? prev.projects : seedOverviewProjects(),
     })
   }, [])
 
@@ -168,6 +177,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       updatedAt: now,
       retryUsed: false,
       failReason: input.fail ? "Build failed: install exited with code 1" : undefined,
+      framework: findRepo(input.repoFullName)?.framework,
+      commitSha: Math.random().toString(16).slice(2, 8),
     }
     const prev = getSnapshot()
     persist({

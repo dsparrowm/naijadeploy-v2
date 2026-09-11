@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { type FormEvent, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { AuthFrame } from "@/components/auth/auth-frame"
+import { Field } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useAppStore } from "@/lib/store/app-store"
 
 export default function ForgotPasswordPage() {
@@ -14,7 +14,7 @@ export default function ForgotPasswordPage() {
   const { setResetEmail } = useAppStore()
   const [email, setEmail] = useState("")
 
-  function onSubmit(event: React.FormEvent) {
+  function onSubmit(event: FormEvent) {
     event.preventDefault()
     setResetEmail(email)
     router.push("/check-email")
@@ -26,15 +26,12 @@ export default function ForgotPasswordPage() {
       description="We’ll send a reset link if the account exists."
       footer={
         <Link href="/login" className="text-foreground hover:underline">
-          Back to log in
+          Back to Sign In
         </Link>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="email" className="text-[13px]">
-            Email
-          </Label>
+      <form onSubmit={onSubmit} className="space-y-3.5">
+        <Field label="Email">
           <Input
             id="email"
             type="email"
@@ -42,9 +39,10 @@ export default function ForgotPasswordPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
+            placeholder="you@startup.ng"
           />
-        </div>
-        <Button type="submit" className="mt-2 w-full">
+        </Field>
+        <Button type="submit" size="lg" className="w-full">
           Send reset link
         </Button>
       </form>

@@ -4,8 +4,11 @@ import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { Check, Circle, Loader2, X } from "lucide-react"
 import { StubUrl } from "@/components/brand/demo-chip"
+import { UserAvatar } from "@/components/brand/user-avatar"
 import { RequireSession } from "@/components/auth/require-session"
 import { FlowFrame } from "@/components/flow/flow-frame"
+import { Surface } from "@/components/chrome/surface"
+import { Progress } from "@/components/ui/progress"
 import { DEPLOY_STAGES, type DeployStageId, type DeployStageState } from "@/lib/deploy/types"
 import { useAppStore } from "@/lib/store/app-store"
 import { cn } from "@/lib/utils"
@@ -24,7 +27,7 @@ function DeployingInner() {
   const params = useParams<{ id: string }>()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const { projects, updateProject } = useAppStore()
+  const { projects, updateProject, user } = useAppStore()
   const project = projects.find((item) => item.id === params.id)
   const shouldFail = searchParams.get("fail") === "1" || project?.status === "failed"
   const [active, setActive] = useState<DeployStageId>("build")
@@ -80,7 +83,6 @@ function DeployingInner() {
       cancelled = true
       timers.forEach((id) => window.clearTimeout(id))
     }
-    // Run once per project visit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id])
 
@@ -100,42 +102,61 @@ function DeployingInner() {
 
   if (!project) return null
 
+  const progress = failed ? 54 : active === "build" ? 28 : active === "deploy" ? 64 : 92
+
   return (
     <FlowFrame
       step={2}
-      stub
       title="Deploying"
-      description={`${project.name} · stub URL, not live hosting`}
+      description={`${project.name} · Build, Deploy, then Health. Stub URL — not live hosting.`}
+      headerRight={
+        <>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[12px] text-success">
+            <span className="size-1.5 rounded-full bg-success" />
+            Systems normal
+          </span>
+          <UserAvatar name={user?.name || user?.email || "You"} size="sm" />
+        </>
+      }
     >
-      <div className="mb-3">
+      <div className="mb-3 max-w-[640px]">
         <StubUrl url={project.url} />
+        <div className="mt-3">
+          <div className="mb-1.5 flex items-center justify-between text-[12px] text-muted-foreground">
+            <span>{failed ? "Deploy failed" : DEPLOY_STAGES.find((stage) => stage.id === active)?.label}</span>
+            <span>{progress}%</span>
+          </div>
+          <Progress value={progress} className="h-1.5 bg-surface-2" />
+        </div>
       </div>
-      <ol className="overflow-hidden rounded-[7px] border border-border bg-card">
-        {DEPLOY_STAGES.map((stage, index) => {
-          const state = states[stage.id]
-          return (
-            <li
-              key={stage.id}
-              className={cn(
-                "flex items-start gap-3 px-4 py-3",
-                index < DEPLOY_STAGES.length - 1 && "border-b border-border",
-              )}
-            >
-              <StageIcon state={state} />
-              <div>
-                <p className="text-[13px] font-medium text-foreground">{stage.label}</p>
-                <p className="text-xs text-muted-foreground">{stage.detail}</p>
-              </div>
-            </li>
-          )
-        })}
-      </ol>
+      <Surface className="max-w-[640px] overflow-hidden">
+        <ol>
+          {DEPLOY_STAGES.map((stage, index) => {
+            const state = states[stage.id]
+            return (
+              <li
+                key={stage.id}
+                className={cn(
+                  "flex items-start gap-3 px-4 py-3",
+                  index < DEPLOY_STAGES.length - 1 && "border-b border-border",
+                )}
+              >
+                <StageIcon state={state} />
+                <div>
+                  <p className="text-[13px] font-medium text-foreground">{stage.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{stage.detail}</p>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+      </Surface>
     </FlowFrame>
   )
 }
 
 function StageIcon({ state }: { state: DeployStageState }) {
-  if (state === "done") return <Check className="mt-0.5 size-4 text-primary" />
+  if (state === "done") return <Check className="mt-0.5 size-4 text-success" />
   if (state === "failed") return <X className="mt-0.5 size-4 text-destructive" />
   if (state === "active") return <Loader2 className="mt-0.5 size-4 animate-spin text-primary" />
   return <Circle className="mt-0.5 size-4 text-muted-foreground/40" />
