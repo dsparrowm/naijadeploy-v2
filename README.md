@@ -23,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - Payment provider: Paystack (`lib/payments`). Thin `PaymentProvider` interface for a later rail. Flutterwave is not implemented.
 - Databases: sidebar **Coming soon** only.
 - Refer & Earn: out of scope — not scaffolded.
-- Auth and the deploy pipeline are session/UI stubs so the path works end-to-end without GitHub or a host.
+- Auth and the deploy pipeline are session/UI stubs so the path works end-to-end without GitHub or a host. `{project}.naijadeploy.app` is a **demo/stub URL**, not live hosting — labeled with a Demo chip.
 
 ## Environment
 
@@ -33,7 +33,7 @@ Copy `.env.example` to `.env.local`.
 | --- | --- | --- |
 | `PAYSTACK_SECRET_KEY` | No | Live initialize/verify. Empty → demo checkout. |
 | `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` | No | Reserved for a future inline Paystack.js flow. |
-| `NEXT_PUBLIC_APP_URL` | No | Paystack callback base. Defaults to `http://localhost:3000`. |
+| `NEXT_PUBLIC_APP_URL` | **Required on hosted preview** | Paystack callback base (e.g. the Vercel preview URL). Defaults to `http://localhost:3000` locally. Without this on a hosted preview, live Paystack redirects back to localhost. |
 
 Without keys, **Upgrade → Pay ₦7,500 with Paystack** opens an in-app demo checkout. Use **Pay ₦7,500** or **Simulate decline**.
 

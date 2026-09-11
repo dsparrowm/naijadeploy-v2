@@ -79,12 +79,11 @@ export class PaystackProvider implements PaymentProvider {
     const amountKobo = PRO_PLAN.amountKobo
 
     if (!secret) {
-      const failed = reference.endsWith("_fail") || reference.includes("fail")
       return {
         provider: this.id,
         demo: true,
         reference,
-        status: failed ? "failed" : "success",
+        status: "failed",
         amountKobo,
       }
     }

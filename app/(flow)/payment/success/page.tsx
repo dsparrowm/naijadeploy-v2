@@ -19,18 +19,29 @@ export default function PaymentSuccessPage() {
 
 function SuccessInner() {
   const searchParams = useSearchParams()
-  const { upgradeToPro, plan } = useAppStore()
+  const { upgradeToPro, plan, consumePendingCheckout } = useAppStore()
   const [status, setStatus] = useState<"pending" | "ok" | "error">("pending")
   const reference = searchParams.get("reference") || searchParams.get("trxref") || ""
+  const demoCheckout = searchParams.get("demo") === "1"
 
   useEffect(() => {
     let cancelled = false
     async function run() {
       if (!reference) {
-        upgradeToPro("demo")
-        setStatus("ok")
+        setStatus("error")
         return
       }
+
+      if (demoCheckout) {
+        if (consumePendingCheckout(reference)) {
+          upgradeToPro(reference)
+          if (!cancelled) setStatus("ok")
+        } else {
+          if (!cancelled) setStatus("error")
+        }
+        return
+      }
+
       const response = await fetch(`/api/paystack/verify?reference=${encodeURIComponent(reference)}`)
       const payload = (await response.json()) as { status?: string }
       if (cancelled) return
@@ -45,11 +56,15 @@ function SuccessInner() {
     return () => {
       cancelled = true
     }
-  }, [reference, upgradeToPro])
+  }, [reference, demoCheckout, upgradeToPro, consumePendingCheckout])
 
   if (status === "error") {
     return (
-      <FlowFrame title="Payment not confirmed" description="Paystack did not return a successful charge.">
+      <FlowFrame
+        stub
+        title="Payment not confirmed"
+        description="Pro unlocks only after Paystack verify succeeds, or after completing demo checkout."
+      >
         <Button asChild>
           <Link href="/payment/failed">View failure</Link>
         </Button>
@@ -59,6 +74,7 @@ function SuccessInner() {
 
   return (
     <FlowFrame
+      stub
       title="Paid Pro unlocked"
       description={`Paystack charged ${formatNaira(PRO_PLAN.priceNaira)}/mo.`}
     >

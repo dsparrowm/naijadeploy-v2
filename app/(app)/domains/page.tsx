@@ -1,5 +1,6 @@
 "use client"
 
+import { DemoChip, StubUrl } from "@/components/brand/demo-chip"
 import {
   Table,
   TableBody,
@@ -15,9 +16,12 @@ export default function DomainsPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-semibold tracking-tight text-foreground">Domains</h1>
+      <div className="flex items-center gap-2">
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Domains</h1>
+        <DemoChip />
+      </div>
       <p className="mt-1 text-[13px] text-muted-foreground">
-        Default production host is {"{project}"}.naijadeploy.app. Custom domains are out of v1.
+        Default host is {"{project}"}.naijadeploy.app (stub — not live hosting). Custom domains are out of v1.
       </p>
       <div className="mt-5 overflow-hidden rounded-[7px] border border-border bg-card">
         <Table>
@@ -39,8 +43,8 @@ export default function DomainsPage() {
               projects.map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="px-3 py-2.5 text-[13px] text-foreground">{project.name}</TableCell>
-                  <TableCell className="px-3 py-2.5 font-mono text-[13px] text-muted-foreground">
-                    {project.url.replace("https://", "")}
+                  <TableCell className="px-3 py-2.5">
+                    <StubUrl url={project.url} />
                   </TableCell>
                   <TableCell className="px-3 py-2.5 text-[13px] text-muted-foreground">
                     {project.status === "live" ? "Issued" : project.status}

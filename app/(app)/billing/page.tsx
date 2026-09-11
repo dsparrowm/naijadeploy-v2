@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DemoChip } from "@/components/brand/demo-chip"
 import { FREE_PLAN, PRO_PLAN, SCALE_PLAN } from "@/lib/config"
 import { formatDate, formatKoboAsNaira, formatNaira } from "@/lib/format"
 import { useAppStore } from "@/lib/store/app-store"
@@ -19,8 +20,13 @@ export default function BillingPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-semibold tracking-tight text-foreground">Billing</h1>
-      <p className="mt-1 text-[13px] text-muted-foreground">Paystack · Pay in Naira</p>
+      <div className="flex items-center gap-2">
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Billing</h1>
+        <DemoChip />
+      </div>
+      <p className="mt-1 text-[13px] text-muted-foreground">
+        Paystack · Pay in Naira · demo checkout unless live keys are set
+      </p>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         <div className="rounded-[7px] border border-border bg-card p-4">

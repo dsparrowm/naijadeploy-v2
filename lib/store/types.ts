@@ -60,4 +60,5 @@ export type AppState = {
   invoices: Invoice[]
   draft: DraftDeploy | null
   resetEmail: string | null
+  pendingCheckoutRef: string | null
 }

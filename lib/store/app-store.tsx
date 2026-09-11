@@ -21,6 +21,7 @@ const emptyState: AppState = {
   invoices: [],
   draft: null,
   resetEmail: null,
+  pendingCheckoutRef: null,
 }
 
 function newId(prefix: string) {
@@ -40,6 +41,7 @@ function readStorage(): AppState {
 
 let memory: AppState = emptyState
 const listeners = new Set<() => void>()
+const consumedDemoRefs = new Set<string>()
 
 function emit() {
   listeners.forEach((listener) => listener())
@@ -74,6 +76,8 @@ type AppStore = AppState & {
   setTwoFactor: (enabled: boolean) => void
   setResetEmail: (email: string) => void
   setDraft: (draft: DraftDeploy | null) => void
+  setPendingCheckoutRef: (reference: string | null) => void
+  consumePendingCheckout: (reference: string) => boolean
   canCreateFreeProject: boolean
   createProject: (input: DraftDeploy & { fail?: boolean }) => Project
   updateProject: (id: string, patch: Partial<Project>) => void
@@ -131,6 +135,20 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 
   const setDraft = useCallback((draft: DraftDeploy | null) => {
     persist({ ...getSnapshot(), draft })
+  }, [])
+
+  const setPendingCheckoutRef = useCallback((reference: string | null) => {
+    persist({ ...getSnapshot(), pendingCheckoutRef: reference })
+  }, [])
+
+  const consumePendingCheckout = useCallback((reference: string) => {
+    if (!reference) return false
+    if (consumedDemoRefs.has(reference)) return true
+    const prev = getSnapshot()
+    if (prev.pendingCheckoutRef !== reference) return false
+    consumedDemoRefs.add(reference)
+    persist({ ...prev, pendingCheckoutRef: null })
+    return true
   }, [])
 
   const createProject = useCallback((input: DraftDeploy & { fail?: boolean }) => {
@@ -249,6 +267,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       setTwoFactor,
       setResetEmail,
       setDraft,
+      setPendingCheckoutRef,
+      consumePendingCheckout,
       canCreateFreeProject,
       createProject,
       updateProject,
@@ -266,6 +286,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       setTwoFactor,
       setResetEmail,
       setDraft,
+      setPendingCheckoutRef,
+      consumePendingCheckout,
       canCreateFreeProject,
       createProject,
       updateProject,

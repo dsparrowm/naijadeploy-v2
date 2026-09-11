@@ -1,3 +1,4 @@
+import { DemoChip } from "@/components/brand/demo-chip"
 import { Logo } from "@/components/brand/logo"
 import { cn } from "@/lib/utils"
 
@@ -5,12 +6,14 @@ const STEPS = ["Connect", "Configure", "Deploy"] as const
 
 export function FlowFrame({
   step,
+  stub = false,
   title,
   description,
   children,
   className,
 }: {
   step?: 0 | 1 | 2
+  stub?: boolean
   title: string
   description?: string
   children: React.ReactNode
@@ -19,7 +22,10 @@ export function FlowFrame({
   return (
     <div className="flex min-h-svh flex-col bg-background">
       <header className="flex h-12 items-center justify-between border-b border-border px-4">
-        <Logo href="/dashboard" />
+        <span className="inline-flex items-center gap-2">
+          <Logo href="/dashboard" />
+          {stub ? <DemoChip /> : null}
+        </span>
         {step !== undefined ? (
           <ol className="flex items-center gap-3 text-[13px] text-muted-foreground">
             {STEPS.map((label, index) => (

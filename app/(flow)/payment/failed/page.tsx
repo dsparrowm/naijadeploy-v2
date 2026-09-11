@@ -36,6 +36,7 @@ function FailedInner() {
 
   return (
     <FlowFrame
+      stub
       title="Payment failed"
       description={`Paystack did not complete ${formatNaira(PRO_PLAN.priceNaira)}.`}
     >

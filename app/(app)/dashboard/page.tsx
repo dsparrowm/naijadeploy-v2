@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DemoChip, StubUrl } from "@/components/brand/demo-chip"
 import { FREE_PLAN, PRO_PLAN } from "@/lib/config"
 import { formatDateTime, formatNaira } from "@/lib/format"
 import { useAppStore } from "@/lib/store/app-store"
@@ -29,7 +30,10 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight text-foreground">Projects</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground">Projects</h1>
+            <DemoChip />
+          </div>
           <p className="mt-1 text-[13px] text-muted-foreground">
             {plan === "pro" ? "Pro" : "Free"} · spend {formatNaira(spend)}
             {plan === "free"
@@ -81,8 +85,8 @@ export default function DashboardPage() {
                   <TableCell className="px-3 py-2.5">
                     <StatusLabel status={project.status} />
                   </TableCell>
-                  <TableCell className="px-3 py-2.5 font-mono text-[13px] text-muted-foreground">
-                    {project.url.replace("https://", "")}
+                  <TableCell className="px-3 py-2.5">
+                    <StubUrl url={project.url} />
                   </TableCell>
                   <TableCell className="px-3 py-2.5 text-[13px] text-muted-foreground">
                     Lagos Edge

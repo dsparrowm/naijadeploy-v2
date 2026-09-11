@@ -37,6 +37,7 @@ function FailedInner() {
   return (
     <FlowFrame
       step={2}
+      stub
       title="Deploy failed"
       description="One retry is included. Your Free credit is kept."
     >

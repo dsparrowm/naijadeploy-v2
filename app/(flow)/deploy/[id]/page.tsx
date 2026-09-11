@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { Check, Circle, Loader2, X } from "lucide-react"
+import { StubUrl } from "@/components/brand/demo-chip"
 import { RequireSession } from "@/components/auth/require-session"
 import { FlowFrame } from "@/components/flow/flow-frame"
 import { DEPLOY_STAGES, type DeployStageId, type DeployStageState } from "@/lib/deploy/types"
@@ -102,9 +103,13 @@ function DeployingInner() {
   return (
     <FlowFrame
       step={2}
+      stub
       title="Deploying"
-      description={`${project.name} · ${project.url.replace("https://", "")}`}
+      description={`${project.name} · stub URL, not live hosting`}
     >
+      <div className="mb-3">
+        <StubUrl url={project.url} />
+      </div>
       <ol className="overflow-hidden rounded-[7px] border border-border bg-card">
         {DEPLOY_STAGES.map((stage, index) => {
           const state = states[stage.id]

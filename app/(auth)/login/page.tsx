@@ -24,7 +24,7 @@ export default function LoginPage() {
   return (
     <AuthFrame
       title="Log in"
-      description="Sign in to deploy or manage projects."
+      description="Demo stub — any email works. Password is not verified."
       footer={
         <>
           No account?{" "}

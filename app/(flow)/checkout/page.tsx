@@ -6,6 +6,7 @@ import { FlowFrame } from "@/components/flow/flow-frame"
 import { Button } from "@/components/ui/button"
 import { formatKoboAsNaira } from "@/lib/format"
 import { PRO_PLAN } from "@/lib/config"
+import { useAppStore } from "@/lib/store/app-store"
 
 export default function CheckoutPage() {
   return (
@@ -18,6 +19,7 @@ export default function CheckoutPage() {
 function CheckoutInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { setPendingCheckoutRef } = useAppStore()
   const reference = searchParams.get("reference") || `nd_pro_${Date.now()}`
   const email = searchParams.get("email") || ""
   const amount = Number(searchParams.get("amount") || PRO_PLAN.amountKobo)
@@ -25,7 +27,8 @@ function CheckoutInner() {
 
   function succeed() {
     setPending(true)
-    router.push(`/payment/success?reference=${encodeURIComponent(reference)}`)
+    setPendingCheckoutRef(reference)
+    router.push(`/payment/success?reference=${encodeURIComponent(reference)}&demo=1`)
   }
 
   function fail() {
@@ -35,6 +38,7 @@ function CheckoutInner() {
 
   return (
     <FlowFrame
+      stub
       title="Paystack checkout"
       description="Demo mode — no PAYSTACK_SECRET_KEY. Live keys redirect to Paystack."
       className="max-w-[400px]"

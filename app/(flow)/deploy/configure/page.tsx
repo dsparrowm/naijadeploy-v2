@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { StubUrl } from "@/components/brand/demo-chip"
 import { DEFAULT_REGION, FREE_PLAN, projectUrl, toSlug } from "@/lib/config"
 import { findRepo } from "@/lib/mock/repos"
 import { useAppStore } from "@/lib/store/app-store"
@@ -69,6 +70,7 @@ function ConfigureInner() {
   return (
     <FlowFrame
       step={1}
+      stub
       title="Configure & deploy"
       description={`${draft.repoFullName} · first deploy on Free is not billed.`}
     >
@@ -78,7 +80,7 @@ function ConfigureInner() {
             Project name
           </Label>
           <Input id="project" value={name} onChange={(e) => setName(e.target.value)} />
-          <p className="text-xs text-muted-foreground">{projectUrl(slug)}</p>
+          <StubUrl url={projectUrl(slug)} className="text-xs" />
         </div>
         <div className="space-y-1.5">
           <Label className="text-[13px]">Branch</Label>

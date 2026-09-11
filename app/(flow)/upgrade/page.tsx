@@ -50,7 +50,7 @@ function UpgradeInner() {
 
   if (plan === "pro") {
     return (
-      <FlowFrame title="Pro is active" description="Paystack billing is already unlocked.">
+      <FlowFrame stub title="Pro is active" description="Paystack billing is already unlocked.">
         <Button asChild>
           <Link href="/billing">Billing</Link>
         </Button>
@@ -60,6 +60,7 @@ function UpgradeInner() {
 
   return (
     <FlowFrame
+      stub
       title="Upgrade to Pro"
       description="Pay in Naira with Paystack. Scale is a stub for later."
     >
