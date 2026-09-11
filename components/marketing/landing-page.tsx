@@ -13,7 +13,7 @@ export function LandingPage() {
   return (
     <div className="flex min-h-svh flex-col bg-background text-foreground">
       <header className="sticky top-0 z-20 border-b border-border bg-background/95">
-        <div className={cn(shell, "flex h-[58px] items-center justify-between")}>
+        <div className={cn(shell, "flex h-[60px] items-center justify-between")}>
           <Logo href="/" />
           <nav className="hidden items-center gap-8 text-[13px] text-muted-foreground md:flex">
             <Link href="#features" className="hover:text-foreground">
@@ -37,42 +37,44 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main className={cn(shell, "flex flex-1 flex-col pb-11 pt-11")}>
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-          <div>
-            <p className="mb-4 inline-flex rounded-[7px] border border-primary/35 bg-primary/10 px-2 py-0.5 text-[12px] text-primary">
-              Lagos Edge · Pay in Naira
-            </p>
-            <h1 className="text-[36px] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
-              Deploy your apps in <span className="text-primary">naira.</span>
-              <br />
-              Built for builders in Lagos.
-            </h1>
-            <p className="mt-3 max-w-[520px] text-[15px] leading-[1.55] text-muted-foreground">
-              First deploy is free. Push from GitHub or GitLab — we build, host, and
-              serve from Lagos Edge. Upgrade only when you need more.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link href="/signup">Start Free</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="#">Docs</Link>
-              </Button>
+      <main className={cn(shell, "flex flex-1 flex-col pb-11")}>
+        <section className="flex min-h-[max(560px,calc(100dvh-3.75rem))] items-center">
+          <div className="grid w-full items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+            <div>
+              <p className="mb-4 inline-flex rounded-[7px] border border-primary/35 bg-primary/10 px-2 py-0.5 text-[12px] text-primary">
+                Lagos Edge · Pay in Naira
+              </p>
+              <h1 className="text-[36px] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
+                Deploy your apps in <span className="text-primary">naira.</span>
+                <br />
+                Built for builders in Lagos.
+              </h1>
+              <p className="mt-3 max-w-[520px] text-[15px] leading-[1.55] text-muted-foreground">
+                First deploy is free. Push from GitHub or GitLab — we build, host, and
+                serve from Lagos Edge. Upgrade only when you need more.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg">
+                  <Link href="/signup">Start Free</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link href="#">Docs</Link>
+                </Button>
+              </div>
+              <p className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-1 text-[12px] text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <PaystackGlyph />
+                  Paystack only
+                </span>
+                <span>No FX fees on Free</span>
+                <span>~50ms West Africa RTT</span>
+              </p>
             </div>
-            <p className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-1 text-[12px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <PaystackGlyph />
-                Paystack only
-              </span>
-              <span>No FX fees on Free</span>
-              <span>~50ms West Africa RTT</span>
-            </p>
+            <TerminalCard />
           </div>
-          <TerminalCard />
-        </div>
+        </section>
 
-        <section id="features" className="mt-11 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <section id="features" className="mt-14 grid grid-cols-2 gap-4 lg:grid-cols-4">
           <FeatureCard label="Edge" title="Lagos Edge" body="West Africa · low RTT" />
           <FeatureCard
             label="Billing"
