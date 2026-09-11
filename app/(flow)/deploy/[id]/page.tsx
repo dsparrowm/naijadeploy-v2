@@ -8,6 +8,7 @@ import { UserAvatar } from "@/components/brand/user-avatar"
 import { RequireSession } from "@/components/auth/require-session"
 import { FlowFrame } from "@/components/flow/flow-frame"
 import { Surface } from "@/components/chrome/surface"
+import { Progress } from "@/components/ui/progress"
 import { DEPLOY_STAGES, type DeployStageId, type DeployStageState } from "@/lib/deploy/types"
 import { useAppStore } from "@/lib/store/app-store"
 import { cn } from "@/lib/utils"
@@ -101,6 +102,8 @@ function DeployingInner() {
 
   if (!project) return null
 
+  const progress = failed ? 54 : active === "build" ? 28 : active === "deploy" ? 64 : 92
+
   return (
     <FlowFrame
       step={2}
@@ -118,6 +121,13 @@ function DeployingInner() {
     >
       <div className="mb-3 max-w-[640px]">
         <StubUrl url={project.url} />
+        <div className="mt-3">
+          <div className="mb-1.5 flex items-center justify-between text-[12px] text-muted-foreground">
+            <span>{failed ? "Deploy failed" : DEPLOY_STAGES.find((stage) => stage.id === active)?.label}</span>
+            <span>{progress}%</span>
+          </div>
+          <Progress value={progress} className="h-1.5 bg-surface-2" />
+        </div>
       </div>
       <Surface className="max-w-[640px] overflow-hidden">
         <ol>

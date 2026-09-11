@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { RequireSession } from "@/components/auth/require-session"
-import { StatusBadge } from "@/components/brand/status-badge"
+import { OutcomeIcon } from "@/components/brand/outcome-icon"
 import { FlowFrame } from "@/components/flow/flow-frame"
 import { Surface } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
@@ -47,10 +47,10 @@ function FailedInner() {
       }
     >
       <Surface className="p-6">
-        <StatusBadge status="failed" />
-        <h1 className="mt-3 text-lg font-semibold text-foreground">Deploy failed</h1>
+        <OutcomeIcon kind="fail" />
+        <h1 className="mt-4 text-lg font-semibold text-foreground">Deploy failed</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
-          One retry is included. Free credit is kept · spend {formatNaira(0)}.
+          Lagos Edge rejected this build. Your Free credit is kept — spend remains {formatNaira(0)}.
         </p>
         <Surface className="mt-4 px-3 py-3">
           <p className="text-[13px] text-foreground">
@@ -60,12 +60,15 @@ function FailedInner() {
             {project.name} · {project.repoFullName} · {project.branch}
           </p>
         </Surface>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button type="button" onClick={retry} disabled={project.retryUsed}>
-            {project.retryUsed ? "Retry used" : "Retry"}
+        <div className="mt-4 flex flex-col gap-2">
+          <Button type="button" size="lg" onClick={retry} disabled={project.retryUsed}>
+            {project.retryUsed ? "Retry used" : "Retry deploy"}
           </Button>
-          <Button asChild variant="outline">
-            <Link href="/dashboard">Dashboard</Link>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/dashboard">Keep free deploy</Link>
+          </Button>
+          <Button asChild variant="ghost" className="w-full">
+            <Link href="/deploy/configure">Edit build settings</Link>
           </Button>
         </div>
       </Surface>

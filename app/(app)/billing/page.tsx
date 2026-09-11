@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
+import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -130,12 +131,13 @@ export default function BillingPage() {
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Rail</TableHead>
+              <TableHead className="w-8"> </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={5} className="py-10 text-center text-[13px] text-muted-foreground">
+                <TableCell colSpan={6} className="py-10 text-center text-[13px] text-muted-foreground">
                   No invoices. Free spend stays ₦0 until you upgrade with Paystack.
                 </TableCell>
               </TableRow>
@@ -149,6 +151,10 @@ export default function BillingPage() {
                     <StatusBadge status={invoice.status} />
                   </TableCell>
                   <TableCell className="text-muted-foreground">Paystack</TableCell>
+                  <TableCell className="text-right text-muted-foreground">
+                    <ChevronDown className="ml-auto size-4" aria-hidden="true" />
+                    <span className="sr-only">Invoice details</span>
+                  </TableCell>
                 </TableRow>
               ))
             )}

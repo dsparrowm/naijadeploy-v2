@@ -15,7 +15,6 @@ export default function LoginPage() {
   const { login, projects } = useAppStore()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [oauthHint, setOauthHint] = useState(false)
 
   function onSubmit(event: FormEvent) {
     event.preventDefault()
@@ -36,17 +35,10 @@ export default function LoginPage() {
         </>
       }
     >
-      <OauthRow onStub={() => setOauthHint(true)} />
+      <OauthRow />
       <div className="my-4">
         <OrDivider />
       </div>
-      {oauthHint ? (
-        <p className="mb-3 text-[12px] text-muted-foreground">
-          GitHub/GitLab are stubs. Use any email — password is not verified.
-        </p>
-      ) : (
-        <p className="mb-3 text-[12px] text-muted-foreground">Demo stub — any email works. Password is not verified.</p>
-      )}
       <form onSubmit={onSubmit} className="space-y-3.5">
         <Field label="Email">
           <Input

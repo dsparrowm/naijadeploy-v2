@@ -15,7 +15,7 @@ import {
 import { DemoChip } from "@/components/brand/demo-chip"
 import { StatusBadge } from "@/components/brand/status-badge"
 import { SearchField, Surface } from "@/components/chrome/surface"
-import { FREE_PLAN, PRO_PLAN } from "@/lib/config"
+import { PRO_PLAN } from "@/lib/config"
 import { formatNaira, formatRelative } from "@/lib/format"
 import { useAppStore } from "@/lib/store/app-store"
 import type { Project } from "@/lib/store/types"
@@ -79,7 +79,7 @@ export default function DashboardPage() {
               <p className="mt-1 text-[13px] text-foreground">
                 {projects.length} {projects.length === 1 ? "project" : "projects"}
                 {projects.length > 0 ? ` · ${liveCount} live` : ""}
-                {plan === "free" ? ` · ${FREE_PLAN.storage}` : ` · ${PRO_PLAN.storage}`}
+                {" · 3.2 GB bandwidth"}
               </p>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[11px] text-success">

@@ -39,7 +39,7 @@ function ConfigureInner() {
   const repo = draft ? findRepo(draft.repoFullName) : undefined
   const [name, setName] = useState(draft?.projectName || "")
   const [branch, setBranch] = useState(draft?.branch || "main")
-  const [rootDirectory, setRootDirectory] = useState("/")
+  const [rootDirectory, setRootDirectory] = useState("./")
   const [buildCommand, setBuildCommand] = useState(repo?.buildCommand || "npm run build")
   const [outputDirectory, setOutputDirectory] = useState(repo?.outputDirectory || ".next")
 

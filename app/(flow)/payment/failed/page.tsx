@@ -1,9 +1,9 @@
 "use client"
 
 import { Suspense } from "react"
-import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PaystackMark } from "@/components/brand/paystack-mark"
+import { OutcomeIcon } from "@/components/brand/outcome-icon"
 import { FlowFrame } from "@/components/flow/flow-frame"
 import { Surface } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
@@ -37,27 +37,22 @@ function FailedInner() {
   }
 
   return (
-    <FlowFrame variant="center" stub headerRight={<PaystackMark />}>
+    <FlowFrame variant="center" headerRight={<PaystackMark />}>
       <Surface className="p-6">
-        <h1 className="text-lg font-semibold text-foreground">Payment failed</h1>
+        <OutcomeIcon kind="fail" />
+        <h1 className="mt-4 text-lg font-semibold text-foreground">Payment failed</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
-          Paystack did not complete {formatNaira(PRO_PLAN.priceNaira)}.
+          Paystack could not complete {formatNaira(PRO_PLAN.priceNaira)}. Your Free deploy is unchanged.
         </p>
         <Surface className="mt-4 px-3 py-3 text-[13px] text-muted-foreground">
-          <p className="text-foreground">Charge declined or cancelled.</p>
-          <p className="mt-2">
-            Retry the Pro checkout, or keep the Free plan. Existing deploy credit is unchanged.
-          </p>
+          Charge declined or cancelled. Retry Pro checkout, or keep the Free plan.
         </Surface>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button type="button" onClick={retry}>
+        <div className="mt-4 flex flex-col gap-2">
+          <Button type="button" size="lg" onClick={retry}>
             Retry {formatNaira(PRO_PLAN.priceNaira)}
           </Button>
-          <Button type="button" variant="outline" onClick={stayFree}>
-            Keep Free
-          </Button>
-          <Button asChild variant="ghost">
-            <Link href="/billing">Billing</Link>
+          <Button type="button" variant="outline" size="lg" onClick={stayFree}>
+            Keep free deploy
           </Button>
         </div>
       </Surface>

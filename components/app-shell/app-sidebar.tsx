@@ -28,7 +28,7 @@ export function AppSidebar() {
   const name = user?.name || user?.email || "Account"
 
   return (
-    <aside className="flex w-[232px] shrink-0 flex-col border-r border-border bg-sidebar">
+    <aside className="flex w-[220px] shrink-0 flex-col border-r border-border bg-sidebar">
       <div className="flex h-12 items-center px-4">
         <Logo href="/dashboard" />
       </div>
@@ -42,7 +42,7 @@ export function AppSidebar() {
               className={cn(
                 "flex h-8 items-center gap-2 rounded-[7px] px-2 text-[13px] transition-colors",
                 active
-                  ? "bg-surface-2 text-foreground"
+                  ? "bg-primary/10 text-foreground"
                   : "text-muted-foreground hover:bg-surface-2 hover:text-foreground",
               )}
             >

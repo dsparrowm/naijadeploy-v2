@@ -52,13 +52,15 @@ export function AuthFrame({
   footer,
   variant = "card",
   marketing,
+  icon,
 }: {
   title: string
-  description?: string
+  description?: ReactNode
   children: ReactNode
   footer?: ReactNode
   variant?: "card" | "split"
   marketing?: ReactNode
+  icon?: ReactNode
 }) {
   if (variant === "split") {
     return (
@@ -87,6 +89,7 @@ export function AuthFrame({
       </header>
       <main className="flex flex-1 items-center justify-center px-4 py-20">
         <Surface className="w-full max-w-[400px] p-7">
+          {icon ? <div className="mb-4">{icon}</div> : null}
           <h1 className="text-lg font-semibold text-foreground">{title}</h1>
           {description ? <p className="mt-1 text-[13px] text-muted-foreground">{description}</p> : null}
           <div className="mt-5">{children}</div>

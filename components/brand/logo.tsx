@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
+/** Nested diamond: white outer + blue inner. Matches polish-html `.logo-mark`. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg
@@ -8,9 +9,8 @@ export function LogoMark({ className }: { className?: string }) {
       className={cn("size-5 shrink-0", className)}
       aria-hidden="true"
     >
-      <path d="M4 5.2 12 2l8 3.2v13.6L12 22l-8-3.2V5.2Z" fill="#2563EB" />
-      <path d="M12 2v20L4 18.8V5.2L12 2Z" fill="#1D4ED8" />
-      <path d="M8.2 9.1h2.3l3.3 5.8V9.1H16v6.8h-2.3L10.4 10v5.9H8.2V9.1Z" fill="#FAFAFA" />
+      <path d="M12 1.4 22.6 12 12 22.6 1.4 12Z" fill="#FAFAFA" />
+      <path d="M12 6.2 17.8 12 12 17.8 6.2 12Z" fill="#2563EB" />
     </svg>
   )
 }
