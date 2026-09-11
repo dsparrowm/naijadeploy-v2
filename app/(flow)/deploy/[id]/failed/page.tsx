@@ -4,8 +4,11 @@ import { useEffect } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { RequireSession } from "@/components/auth/require-session"
+import { StatusBadge } from "@/components/brand/status-badge"
 import { FlowFrame } from "@/components/flow/flow-frame"
+import { Surface } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
+import { formatNaira } from "@/lib/format"
 import { useAppStore } from "@/lib/store/app-store"
 
 export default function DeployFailedPage() {
@@ -36,28 +39,36 @@ function FailedInner() {
 
   return (
     <FlowFrame
-      step={2}
-      stub
-      title="Deploy failed"
-      description="One retry is included. Your Free credit is kept."
+      variant="center"
+      headerRight={
+        <Button asChild variant="outline" size="sm">
+          <Link href="/dashboard">Open dashboard</Link>
+        </Button>
+      }
     >
-      <div className="rounded-[7px] border border-border bg-card p-4">
-        <p className="text-[13px] text-foreground">
-          {project.failReason || "Deploy failed: Lagos Edge rejected the build artifact"}
+      <Surface className="p-6">
+        <StatusBadge status="failed" />
+        <h1 className="mt-3 text-lg font-semibold text-foreground">Deploy failed</h1>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          One retry is included. Free credit is kept · spend {formatNaira(0)}.
         </p>
-        <p className="mt-3 text-[13px] text-muted-foreground">
-          {project.name} · {project.repoFullName} · {project.branch}
-        </p>
-        <p className="mt-3 text-[13px] text-foreground">Free credit kept · spend ₦0</p>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button type="button" onClick={retry} disabled={project.retryUsed}>
-          {project.retryUsed ? "Retry used" : "Retry"}
-        </Button>
-        <Button asChild variant="outline">
-          <Link href="/dashboard">Dashboard</Link>
-        </Button>
-      </div>
+        <Surface className="mt-4 px-3 py-3">
+          <p className="text-[13px] text-foreground">
+            {project.failReason || "Deploy failed: Lagos Edge rejected the build artifact"}
+          </p>
+          <p className="mt-2 text-[12px] text-muted-foreground">
+            {project.name} · {project.repoFullName} · {project.branch}
+          </p>
+        </Surface>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button type="button" onClick={retry} disabled={project.retryUsed}>
+            {project.retryUsed ? "Retry used" : "Retry"}
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
+        </div>
+      </Surface>
     </FlowFrame>
   )
 }

@@ -10,10 +10,10 @@ import {
   Settings,
 } from "lucide-react"
 import { Logo } from "@/components/brand/logo"
-import { Badge } from "@/components/ui/badge"
+import { UserAvatar } from "@/components/brand/user-avatar"
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/lib/store/app-store"
-import { formatNaira } from "@/lib/format"
+import { shortName } from "@/lib/format"
 
 const NAV = [
   { href: "/dashboard", label: "Projects", icon: FolderKanban },
@@ -25,9 +25,10 @@ const NAV = [
 export function AppSidebar() {
   const pathname = usePathname()
   const { user, plan } = useAppStore()
+  const name = user?.name || user?.email || "Account"
 
   return (
-    <aside className="flex w-[220px] shrink-0 flex-col border-r border-border bg-sidebar">
+    <aside className="flex w-[232px] shrink-0 flex-col border-r border-border bg-sidebar">
       <div className="flex h-12 items-center px-4">
         <Logo href="/dashboard" />
       </div>
@@ -50,22 +51,20 @@ export function AppSidebar() {
             </Link>
           )
         })}
-        <span className="flex h-8 cursor-not-allowed items-center gap-2 rounded-[7px] px-2 text-[13px] text-muted-foreground/60">
+        <span className="flex h-8 cursor-not-allowed items-center gap-2 rounded-[7px] px-2 text-[13px] text-muted-foreground/55">
           <Database className="size-3.5" />
           Databases
-          <Badge
-            variant="outline"
-            className="ml-auto h-4 rounded-[4px] border-border px-1.5 text-[10px] font-medium text-muted-foreground"
-          >
+          <span className="ml-auto rounded-[4px] border border-border px-1.5 py-px text-[10px] font-medium text-muted-foreground">
             Coming soon
-          </Badge>
+          </span>
         </span>
       </nav>
-      <div className="border-t border-border px-3 py-3">
-        <p className="truncate text-[13px] text-foreground">{user?.email}</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          {plan === "pro" ? `Pro · ${formatNaira(7500)}/mo` : "Free · ₦0"}
-        </p>
+      <div className="flex items-center gap-2.5 border-t border-border px-3 py-3">
+        <UserAvatar name={name} />
+        <div className="min-w-0">
+          <p className="truncate text-[13px] font-medium text-foreground">{shortName(name)}</p>
+          <p className="text-[12px] text-muted-foreground">{plan === "pro" ? "Pro" : "Free"}</p>
+        </div>
       </div>
     </aside>
   )

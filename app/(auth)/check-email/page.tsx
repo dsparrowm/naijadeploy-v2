@@ -20,8 +20,8 @@ export default function CheckEmailPage() {
       <p className="text-[13px] text-muted-foreground">
         The link expires in 30 minutes. Check spam if you don’t see it.
       </p>
-      <Button asChild className="mt-6 w-full">
-        <Link href="/login">Back to log in</Link>
+      <Button asChild size="lg" className="mt-6 w-full">
+        <Link href="/login">Back to Sign In</Link>
       </Button>
     </AuthFrame>
   )

@@ -3,7 +3,10 @@
 import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { DemoChip } from "@/components/brand/demo-chip"
+import { PaystackMark } from "@/components/brand/paystack-mark"
 import { FlowFrame } from "@/components/flow/flow-frame"
+import { Surface } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
 import { formatNaira } from "@/lib/format"
 import { PRO_PLAN } from "@/lib/config"
@@ -68,36 +71,43 @@ function SuccessInner() {
 
   if (status === "error") {
     return (
-      <FlowFrame
-        stub
-        title="Payment not confirmed"
-        description="Pro unlocks only after Paystack verify succeeds, or after completing demo checkout."
-      >
-        <Button asChild>
-          <Link href="/payment/failed">View failure</Link>
-        </Button>
+      <FlowFrame variant="center" stub headerRight={<PaystackMark />}>
+        <Surface className="p-6">
+          <h1 className="text-lg font-semibold text-foreground">Payment not confirmed</h1>
+          <p className="mt-1 text-[13px] text-muted-foreground">
+            Pro unlocks only after Paystack verify succeeds, or after completing demo checkout.
+          </p>
+          <Button asChild className="mt-5">
+            <Link href="/payment/failed">View failure</Link>
+          </Button>
+        </Surface>
       </FlowFrame>
     )
   }
 
   return (
-    <FlowFrame
-      stub
-      title="Paid Pro unlocked"
-      description={`Paystack charged ${formatNaira(PRO_PLAN.priceNaira)}/mo.`}
-    >
-      <div className="rounded-[7px] border border-border bg-card p-4 text-[13px] text-muted-foreground">
-        <p className="text-foreground">{plan === "pro" || status === "ok" ? "Pro is active." : "Confirming…"}</p>
-        <p className="mt-2">Invoice written to Billing. Provider: Paystack.</p>
-      </div>
-      <div className="mt-4 flex gap-2">
-        <Button asChild>
-          <Link href="/dashboard">Dashboard</Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href="/billing">Billing</Link>
-        </Button>
-      </div>
+    <FlowFrame variant="center" stub headerRight={<PaystackMark />}>
+      <Surface className="p-6">
+        <div className="flex items-center gap-2">
+          <h1 className="text-lg font-semibold text-foreground">Paid Pro unlocked</h1>
+          <DemoChip />
+        </div>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          Paystack charged {formatNaira(PRO_PLAN.priceNaira)}/mo.
+        </p>
+        <Surface className="mt-4 px-3 py-3 text-[13px] text-muted-foreground">
+          <p className="text-foreground">{plan === "pro" || status === "ok" ? "Pro is active." : "Confirming…"}</p>
+          <p className="mt-2">Invoice written to Billing. Provider: Paystack.</p>
+        </Surface>
+        <div className="mt-4 flex gap-2">
+          <Button asChild>
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/billing">Billing</Link>
+          </Button>
+        </div>
+      </Surface>
     </FlowFrame>
   )
 }

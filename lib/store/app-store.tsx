@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
 } from "react"
 import { FREE_PLAN, PRO_PLAN, projectUrl, toSlug } from "@/lib/config"
+import { findRepo } from "@/lib/mock/repos"
 import type { AppState, DraftDeploy, Invoice, PlanId, Project, User } from "@/lib/store/types"
 
 const STORAGE_KEY = "naijadeploy.session.v1"
@@ -168,6 +169,8 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       updatedAt: now,
       retryUsed: false,
       failReason: input.fail ? "Build failed: install exited with code 1" : undefined,
+      framework: findRepo(input.repoFullName)?.framework,
+      commitSha: Math.random().toString(16).slice(2, 8),
     }
     const prev = getSnapshot()
     persist({

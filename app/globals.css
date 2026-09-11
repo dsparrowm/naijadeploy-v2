@@ -16,7 +16,7 @@
   --secondary-foreground: #fafafa;
   --muted: #161616;
   --muted-foreground: #a1a1a1;
-  --accent: #2563eb;
+  --accent: #161616;
   --accent-foreground: #fafafa;
   --destructive: #dc2626;
   --destructive-foreground: #fafafa;
@@ -25,6 +25,8 @@
   --ring: #2563eb;
   --surface: #111111;
   --surface-2: #161616;
+  --success: #16a34a;
+  --warning: #d97706;
   --chart-1: #2563eb;
   --chart-2: #3b82f6;
   --chart-3: #1d4ed8;
@@ -54,7 +56,7 @@
   --secondary-foreground: #fafafa;
   --muted: #161616;
   --muted-foreground: #a1a1a1;
-  --accent: #2563eb;
+  --accent: #161616;
   --accent-foreground: #fafafa;
   --destructive: #dc2626;
   --destructive-foreground: #fafafa;
@@ -63,6 +65,8 @@
   --ring: #2563eb;
   --surface: #111111;
   --surface-2: #161616;
+  --success: #16a34a;
+  --warning: #d97706;
   --sidebar: #0a0a0a;
   --sidebar-foreground: #fafafa;
   --sidebar-primary: #2563eb;
@@ -97,6 +101,8 @@
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -126,5 +132,9 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: 'ss01' on, 'cv11' on;
+    font-size: 13px;
+  }
+  h1, h2, h3 {
+    letter-spacing: -0.02em;
   }
 }

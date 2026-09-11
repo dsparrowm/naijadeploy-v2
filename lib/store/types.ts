@@ -30,6 +30,8 @@ export type Project = {
   updatedAt: string
   retryUsed: boolean
   failReason?: string
+  framework?: string
+  commitSha?: string
 }
 
 export type InvoiceStatus = "paid" | "open" | "failed"

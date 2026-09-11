@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { type FormEvent, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { AuthFrame } from "@/components/auth/auth-frame"
+import { Field } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useAppStore } from "@/lib/store/app-store"
 
 export default function TwoFactorPage() {
@@ -14,7 +14,7 @@ export default function TwoFactorPage() {
   const { setTwoFactor, user } = useAppStore()
   const [code, setCode] = useState("")
 
-  function enable(event: React.FormEvent) {
+  function enable(event: FormEvent) {
     event.preventDefault()
     if (code.trim().length < 6) return
     setTwoFactor(true)
@@ -34,15 +34,12 @@ export default function TwoFactorPage() {
           : "Optional extra step. You can skip this."
       }
     >
-      <div className="rounded-[7px] border border-border bg-card p-4">
-        <p className="text-[13px] text-muted-foreground">Authenticator secret</p>
-        <p className="mt-1 font-mono text-sm tracking-wider text-foreground">ND-2FA-7K4M-QP2X</p>
+      <div className="rounded-[7px] border border-border bg-background px-3 py-3">
+        <p className="text-[12px] text-muted-foreground">Authenticator secret</p>
+        <p className="mt-1 font-mono text-[13px] tracking-wider text-foreground">ND-2FA-7K4M-QP2X</p>
       </div>
-      <form onSubmit={enable} className="mt-4 space-y-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="otp" className="text-[13px]">
-            Verification code
-          </Label>
+      <form onSubmit={enable} className="mt-4 space-y-3.5">
+        <Field label="Verification code">
           <Input
             id="otp"
             inputMode="numeric"
@@ -52,8 +49,8 @@ export default function TwoFactorPage() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             placeholder="000000"
           />
-        </div>
-        <Button type="submit" className="w-full" disabled={code.length < 6}>
+        </Field>
+        <Button type="submit" size="lg" className="w-full" disabled={code.length < 6}>
           Enable 2FA
         </Button>
       </form>
