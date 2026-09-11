@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { HeroScene } from "./hero-scene"
 import { ArrowRight, Github } from "lucide-react"
@@ -36,26 +37,22 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="group bg-primary text-primary-foreground hover:bg-primary/90">
-              Start Deploying Free
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <Button size="lg" className="group" asChild>
+              <Link href="/signup">
+                Start deploying free
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-border bg-transparent hover:bg-muted">
-              <Github className="mr-2 h-4 w-4" />
-              View on GitHub
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/login">
+                <Github className="mr-2 h-4 w-4" />
+                Log in
+              </Link>
             </Button>
           </div>
 
-          {/* Trust indicators */}
-          <div className="mt-12 flex flex-col items-center gap-4">
-            <p className="text-sm text-muted-foreground">Trusted by developers across Africa</p>
-            <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
-              <span className="text-lg font-semibold text-foreground">Flutterwave</span>
-              <span className="text-lg font-semibold text-foreground">Paystack</span>
-              <span className="text-lg font-semibold text-foreground">Andela</span>
-              <span className="text-lg font-semibold text-foreground">Cowrywise</span>
-              <span className="text-lg font-semibold text-foreground">Piggyvest</span>
-            </div>
+          <div className="mt-12 flex flex-col items-center gap-2">
+            <p className="text-[13px] text-muted-foreground">Pay in Naira with Paystack · Lagos Edge</p>
           </div>
         </div>
 
