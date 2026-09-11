@@ -12,14 +12,14 @@ import { useAppStore } from "@/lib/store/app-store"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login, projects } = useAppStore()
+  const { login } = useAppStore()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
   function onSubmit(event: FormEvent) {
     event.preventDefault()
     login({ email })
-    router.push(projects.length > 0 ? "/dashboard" : "/connect")
+    router.push("/dashboard")
   }
 
   return (

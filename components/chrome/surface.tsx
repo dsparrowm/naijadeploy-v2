@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react"
+import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function Surface({
@@ -18,14 +19,17 @@ export function SearchField({
   ...props
 }: ComponentProps<"input">) {
   return (
-    <input
-      type="search"
-      className={cn(
-        "h-9 w-full max-w-[220px] rounded-[7px] border border-border bg-background px-3 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/80 focus-visible:border-primary",
-        className,
-      )}
-      {...props}
-    />
+    <div className="relative w-full max-w-[240px]">
+      <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+      <input
+        type="search"
+        className={cn(
+          "h-9 w-full rounded-[7px] border border-border bg-background py-1 pl-8 pr-3 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/80 focus-visible:border-primary",
+          className,
+        )}
+        {...props}
+      />
+    </div>
   )
 }
 

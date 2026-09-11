@@ -11,6 +11,7 @@ import {
 } from "react"
 import { FREE_PLAN, PRO_PLAN, projectUrl, toSlug } from "@/lib/config"
 import { findRepo } from "@/lib/mock/repos"
+import { seedOverviewProjects } from "@/lib/mock/projects"
 import type { AppState, DraftDeploy, Invoice, PlanId, Project, User } from "@/lib/store/types"
 
 const STORAGE_KEY = "naijadeploy.session.v1"
@@ -111,12 +112,14 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback((input: { email: string }) => {
     const email = input.email.trim().toLowerCase()
     const prev = getSnapshot()
+    const user: User =
+      prev.user?.email === email
+        ? prev.user
+        : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false }
     persist({
       ...prev,
-      user:
-        prev.user?.email === email
-          ? prev.user
-          : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false },
+      user,
+      projects: prev.projects.length > 0 ? prev.projects : seedOverviewProjects(),
     })
   }, [])
 
