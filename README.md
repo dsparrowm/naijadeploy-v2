@@ -65,4 +65,4 @@ Without keys, **Upgrade → Pay ₦7,500 with Paystack** opens an in-app demo ch
 - Shell: `/dashboard` `/domains` `/settings`
 - Force a failed deploy from configure: `/deploy/configure?fail=1`
 
-The account session is a Better Auth cookie. Projects, plan, and the deploy draft still use `localStorage` (`naijadeploy.session.v1`) until they move to Postgres. Dashboard, billing, domains, settings, connect, deploy, upgrade, checkout, and payment routes require a session.
+The account session is a Better Auth cookie. Projects, invoices, the deploy draft, and the plan are loaded from Postgres on each request. The plan changes only after a server-side Paystack verify, or after the signed-in user authorizes a demo checkout — the browser cannot set it. Dashboard, billing, domains, settings, connect, deploy, upgrade, checkout, and payment routes require a session. Clearing browser storage does not remove projects; sign in on another device with the same account to see them.

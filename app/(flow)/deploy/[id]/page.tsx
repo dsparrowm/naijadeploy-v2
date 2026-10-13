@@ -42,46 +42,44 @@ function DeployingInner() {
   useEffect(() => {
     if (!project) return
     let cancelled = false
-    const timers: number[] = []
 
-    updateProject(project.id, { status: "building", stage: "build" })
+    async function pause(ms: number) {
+      await new Promise((resolve) => window.setTimeout(resolve, ms))
+    }
 
-    ORDER.forEach((stage, index) => {
-      timers.push(
-        window.setTimeout(() => {
-          if (cancelled) return
-          if (shouldFail && stage === "deploy") {
-            setFailed(true)
-            setActive("deploy")
-            updateProject(project.id, {
-              status: "failed",
-              stage: "deploy",
-              failReason: "Deploy failed: Lagos Edge rejected the build artifact",
-            })
-            router.replace(`/deploy/${project.id}/failed`)
-            return
-          }
-          setActive(stage)
-          updateProject(project.id, {
-            status: stage === "build" ? "building" : stage === "deploy" ? "deploying" : "health",
-            stage,
+    const projectId = project.id
+
+    async function run() {
+      for (const stage of ORDER) {
+        if (cancelled) return
+        if (shouldFail && stage === "deploy") {
+          setFailed(true)
+          setActive("deploy")
+          await updateProject(projectId, {
+            status: "failed",
+            stage: "deploy",
+            failReason: "Deploy failed: Lagos Edge rejected the build artifact",
           })
-          if (stage === "health") {
-            timers.push(
-              window.setTimeout(() => {
-                if (cancelled) return
-                updateProject(project.id, { status: "live", stage: "health" })
-                router.replace(`/deploy/${project.id}/live`)
-              }, 1100),
-            )
-          }
-        }, index * 1400),
-      )
-    })
+          if (!cancelled) router.replace(`/deploy/${projectId}/failed`)
+          return
+        }
+        setActive(stage)
+        await updateProject(projectId, {
+          status: stage === "build" ? "building" : stage === "deploy" ? "deploying" : "health",
+          stage,
+        })
+        await pause(stage === "health" ? 1100 : 1400)
+        if (cancelled) return
+        if (stage === "health") {
+          await updateProject(projectId, { status: "live", stage: "health" })
+          if (!cancelled) router.replace(`/deploy/${projectId}/live`)
+        }
+      }
+    }
 
+    void run()
     return () => {
       cancelled = true
-      timers.forEach((id) => window.clearTimeout(id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id])

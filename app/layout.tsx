@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { Providers } from "@/components/providers"
-import { getSessionUser } from "@/lib/auth-session"
+import { loadAppState } from "@/lib/server/app-state"
 import "./globals.css"
 
 export const dynamic = "force-dynamic"
@@ -25,11 +25,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const sessionUser = await getSessionUser()
+  const initial = await loadAppState()
   return (
     <html lang="en" className={`dark ${inter.variable}`} suppressHydrationWarning>
       <body className={`${inter.className} font-sans antialiased`}>
-        <Providers sessionUser={sessionUser}>{children}</Providers>
+        <Providers initial={initial}>{children}</Providers>
       </body>
     </html>
   )

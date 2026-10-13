@@ -25,14 +25,14 @@ function FailedInner() {
   const { recordFailedPayment, keepFree } = useAppStore()
   const reference = searchParams.get("reference") || "paystack_fail"
 
-  function retry() {
-    recordFailedPayment(reference)
+  async function retry() {
+    await recordFailedPayment(reference)
     router.push("/upgrade")
   }
 
-  function stayFree() {
-    recordFailedPayment(reference)
-    keepFree()
+  async function stayFree() {
+    await recordFailedPayment(reference)
+    await keepFree()
     router.push("/dashboard")
   }
 
@@ -48,10 +48,10 @@ function FailedInner() {
           Charge declined or cancelled. Retry Pro checkout, or keep the Free plan.
         </Surface>
         <div className="mt-4 flex flex-col gap-2">
-          <Button type="button" size="lg" onClick={retry}>
+          <Button type="button" size="lg" onClick={() => void retry()}>
             Retry {formatNaira(PRO_PLAN.priceNaira)}
           </Button>
-          <Button type="button" variant="outline" size="lg" onClick={stayFree}>
+          <Button type="button" variant="outline" size="lg" onClick={() => void stayFree()}>
             Keep free deploy
           </Button>
         </div>

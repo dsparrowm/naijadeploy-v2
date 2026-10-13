@@ -55,6 +55,18 @@ export type DraftDeploy = {
   branch: string
   region: "lagos-edge"
   simulateFailure?: boolean
+  framework?: string
+  buildCommand?: string
+  outputDirectory?: string
+  branches?: string[]
+}
+
+export type RepoSummary = {
+  fullName: string
+  private: boolean
+  updatedAt: string
+  framework: string
+  defaultBranch: string
 }
 
 export type AppState = {
@@ -63,6 +75,12 @@ export type AppState = {
   projects: Project[]
   invoices: Invoice[]
   draft: DraftDeploy | null
-  resetEmail: string | null
-  pendingCheckoutRef: string | null
+}
+
+export const emptyAppState: AppState = {
+  user: null,
+  plan: "free",
+  projects: [],
+  invoices: [],
+  draft: null,
 }

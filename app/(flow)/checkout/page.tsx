@@ -23,15 +23,19 @@ export default function CheckoutPage() {
 function CheckoutInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { setPendingCheckoutRef } = useAppStore()
+  const { authorizeCheckout } = useAppStore()
   const reference = searchParams.get("reference") || `nd_pro_${Date.now()}`
   const email = searchParams.get("email") || ""
   const amount = Number(searchParams.get("amount") || PRO_PLAN.amountKobo)
   const [pending, setPending] = useState(false)
 
-  function succeed() {
+  async function succeed() {
     setPending(true)
-    setPendingCheckoutRef(reference)
+    const allowed = await authorizeCheckout(reference)
+    if (!allowed) {
+      setPending(false)
+      return
+    }
     router.push(`/payment/success?reference=${encodeURIComponent(reference)}&demo=1`)
   }
 
@@ -60,7 +64,7 @@ function CheckoutInner() {
           <p className="mt-1 font-mono text-[12px] text-muted-foreground">{reference}</p>
         </div>
         <div className="mt-4 flex flex-col gap-2">
-          <Button type="button" size="lg" onClick={succeed} disabled={pending}>
+          <Button type="button" size="lg" onClick={() => void succeed()} disabled={pending}>
             Pay {formatKoboAsNaira(amount)}
           </Button>
           <Button type="button" variant="outline" onClick={fail} disabled={pending}>

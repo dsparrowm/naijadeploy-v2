@@ -5,7 +5,10 @@ function hoursAgo(hours: number) {
   return new Date(Date.now() - hours * 3_600_000).toISOString()
 }
 
-/** Visual SoT overview rows from dashboard.png — used when login has no projects yet. */
+/**
+ * Visual overview rows kept for a later pipeline change.
+ * Sessions do not seed these. Projects come from Postgres.
+ */
 export function seedOverviewProjects(): Project[] {
   const created = hoursAgo(24 * 5)
   return [
