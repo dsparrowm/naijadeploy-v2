@@ -2,19 +2,21 @@ import { Github, Gitlab } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function OauthRow({
-  onStub,
+  onGithub,
+  onGitlab,
   labels = { github: "GitHub", gitlab: "GitLab" },
 }: {
-  onStub?: () => void
+  onGithub?: () => void
+  onGitlab?: () => void
   labels?: { github: string; gitlab: string }
 }) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      <Button type="button" variant="outline" className="h-10" onClick={onStub}>
+      <Button type="button" variant="outline" className="h-10" onClick={onGithub}>
         <Github className="size-3.5" />
         {labels.github}
       </Button>
-      <Button type="button" variant="outline" className="h-10" onClick={onStub}>
+      <Button type="button" variant="outline" className="h-10" onClick={onGitlab}>
         <Gitlab className="size-3.5" />
         {labels.gitlab}
       </Button>

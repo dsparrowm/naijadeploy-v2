@@ -9,9 +9,10 @@ export default function SettingsPage() {
   const router = useRouter()
   const { user, logout } = useAppStore()
 
-  function signOut() {
-    logout()
+  async function signOut() {
+    await logout()
     router.push("/login")
+    router.refresh()
   }
 
   return (

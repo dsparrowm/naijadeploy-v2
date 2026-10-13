@@ -1,7 +1,6 @@
 "use client"
 
 import { type FormEvent, useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { AuthFrame } from "@/components/auth/auth-frame"
 import { QrStub } from "@/components/brand/qr-stub"
@@ -16,15 +15,18 @@ export default function TwoFactorPage() {
   const { setTwoFactor } = useAppStore()
   const [code, setCode] = useState("")
 
-  function enable(event: FormEvent) {
+  async function enable(event: FormEvent) {
     event.preventDefault()
     if (code.trim().length < 6) return
-    setTwoFactor(true)
+    await setTwoFactor(true)
     router.push("/connect")
+    router.refresh()
   }
 
-  function skip() {
-    setTwoFactor(false)
+  async function skip() {
+    await setTwoFactor(false)
+    router.push("/connect")
+    router.refresh()
   }
 
   return (
@@ -55,10 +57,8 @@ export default function TwoFactorPage() {
           Verify and Enable
         </Button>
       </form>
-      <Button type="button" variant="ghost" className="mt-2 w-full" asChild>
-        <Link href="/connect" onClick={skip}>
-          Skip for now
-        </Link>
+      <Button type="button" variant="ghost" className="mt-2 w-full" onClick={() => void skip()}>
+        Skip for now
       </Button>
     </AuthFrame>
   )

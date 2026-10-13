@@ -7,17 +7,28 @@ import { AuthFrame } from "@/components/auth/auth-frame"
 import { Field } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useAppStore } from "@/lib/store/app-store"
+import { authClient } from "@/lib/auth-client"
 
 export default function ForgotPasswordPage() {
   const router = useRouter()
-  const { setResetEmail } = useAppStore()
   const [email, setEmail] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
-  function onSubmit(event: FormEvent) {
+  async function onSubmit(event: FormEvent) {
     event.preventDefault()
-    setResetEmail(email)
-    router.push("/check-email")
+    setPending(true)
+    setError(null)
+    const result = await authClient.requestPasswordReset({
+      email: email.trim(),
+      redirectTo: "/reset-password",
+    })
+    if (result.error) {
+      setError(result.error.message || "Could not send the reset link")
+      setPending(false)
+      return
+    }
+    router.push(`/check-email?email=${encodeURIComponent(email.trim())}`)
   }
 
   return (
@@ -42,7 +53,8 @@ export default function ForgotPasswordPage() {
             placeholder="you@startup.ng"
           />
         </Field>
-        <Button type="submit" size="lg" className="w-full">
+        {error ? <p className="text-[13px] text-destructive">{error}</p> : null}
+        <Button type="submit" size="lg" className="w-full" disabled={pending}>
           Send reset link
         </Button>
       </form>

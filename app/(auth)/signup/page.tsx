@@ -9,22 +9,47 @@ import { Field } from "@/components/chrome/surface"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { useAppStore } from "@/lib/store/app-store"
+import { authClient } from "@/lib/auth-client"
 
 export default function SignupPage() {
   const router = useRouter()
-  const { signup } = useAppStore()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [agreed, setAgreed] = useState(true)
-  const [oauthHint, setOauthHint] = useState(false)
+  const [oauthHint, setOauthHint] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
-  function onSubmit(event: FormEvent) {
+  async function onSubmit(event: FormEvent) {
     event.preventDefault()
     if (!agreed) return
-    signup({ name, email })
+    setPending(true)
+    setError(null)
+    const result = await authClient.signUp.email({
+      name: name.trim(),
+      email: email.trim(),
+      password,
+      callbackURL: "/2fa",
+    })
+    if (result.error) {
+      setError(result.error.message || "Could not create the account")
+      setPending(false)
+      return
+    }
     router.push("/2fa")
+    router.refresh()
+  }
+
+  async function signInWithGithub() {
+    setOauthHint(null)
+    const result = await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/dashboard",
+    })
+    if (result.error) {
+      setOauthHint("GitHub sign-in is not configured. Continue with email.")
+    }
   }
 
   return (
@@ -41,13 +66,14 @@ export default function SignupPage() {
         </>
       }
     >
-      <OauthRow onStub={() => setOauthHint(true)} />
+      <OauthRow
+        onGithub={() => void signInWithGithub()}
+        onGitlab={() => setOauthHint("GitLab connect is a stub. Continue with email.")}
+      />
       <div className="my-4">
         <OrDivider label="or continue with email" />
       </div>
-      {oauthHint ? (
-        <p className="mb-3 text-[12px] text-muted-foreground">OAuth is a stub. Continue with any email.</p>
-      ) : null}
+      {oauthHint ? <p className="mb-3 text-[12px] text-muted-foreground">{oauthHint}</p> : null}
       <form onSubmit={onSubmit} className="space-y-3.5">
         <Field label="Full name">
           <Input
@@ -89,7 +115,8 @@ export default function SignupPage() {
             <span className="text-foreground">Privacy Policy</span>.
           </span>
         </label>
-        <Button type="submit" size="lg" className="w-full" disabled={!agreed}>
+        {error ? <p className="text-[13px] text-destructive">{error}</p> : null}
+        <Button type="submit" size="lg" className="w-full" disabled={!agreed || pending}>
           Create Free Account
         </Button>
       </form>

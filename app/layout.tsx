@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { Providers } from "@/components/providers"
+import { getSessionUser } from "@/lib/auth-session"
 import "./globals.css"
+
+export const dynamic = "force-dynamic"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,15 +20,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const sessionUser = await getSessionUser()
   return (
     <html lang="en" className={`dark ${inter.variable}`} suppressHydrationWarning>
       <body className={`${inter.className} font-sans antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers sessionUser={sessionUser}>{children}</Providers>
       </body>
     </html>
   )
