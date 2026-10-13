@@ -31,10 +31,10 @@ function FailedInner() {
 
   if (!project) return null
 
-  function retry() {
+  async function retry() {
     if (!project || project.retryUsed) return
-    retryDeploy(project.id)
-    router.push(`/deploy/${project.id}`)
+    const next = await retryDeploy(project.id)
+    if (next) router.push(`/deploy/${project.id}`)
   }
 
   return (
@@ -61,7 +61,7 @@ function FailedInner() {
           </p>
         </Surface>
         <div className="mt-4 flex flex-col gap-2">
-          <Button type="button" size="lg" onClick={retry} disabled={project.retryUsed}>
+          <Button type="button" size="lg" onClick={() => void retry()} disabled={project.retryUsed}>
             {project.retryUsed ? "Retry used" : "Retry deploy"}
           </Button>
           <Button asChild variant="outline" size="lg">

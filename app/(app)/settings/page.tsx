@@ -1,18 +1,15 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Surface } from "@/components/chrome/surface"
 import { useAppStore } from "@/lib/store/app-store"
 
 export default function SettingsPage() {
-  const router = useRouter()
   const { user, logout } = useAppStore()
 
   async function signOut() {
     await logout()
-    router.push("/login")
-    router.refresh()
+    window.location.assign("/login")
   }
 
   return (

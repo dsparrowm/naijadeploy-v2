@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/select"
 import { DEFAULT_REGION, FREE_PLAN, projectUrl, toSlug } from "@/lib/config"
 import { formatNaira } from "@/lib/format"
-import { findRepo } from "@/lib/mock/repos"
 import { useAppStore } from "@/lib/store/app-store"
 import { cn } from "@/lib/utils"
 
@@ -36,23 +35,24 @@ function ConfigureInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { draft, setDraft, createProject, canCreateFreeProject, user } = useAppStore()
-  const repo = draft ? findRepo(draft.repoFullName) : undefined
   const [name, setName] = useState(draft?.projectName || "")
   const [branch, setBranch] = useState(draft?.branch || "main")
   const [rootDirectory, setRootDirectory] = useState("./")
-  const [buildCommand, setBuildCommand] = useState(repo?.buildCommand || "npm run build")
-  const [outputDirectory, setOutputDirectory] = useState(repo?.outputDirectory || ".next")
+  const [buildCommand, setBuildCommand] = useState(draft?.buildCommand || "npm run build")
+  const [outputDirectory, setOutputDirectory] = useState(draft?.outputDirectory || ".next")
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
   useEffect(() => {
     if (!draft) router.replace("/connect")
   }, [draft, router])
 
   const slug = useMemo(() => toSlug(name || draft?.slug || "app"), [name, draft?.slug])
-  const branches = repo?.branches ?? [branch]
+  const branches = draft?.branches ?? [branch]
   const forceFail = searchParams.get("fail") === "1"
 
-  function deploy() {
-    if (!draft) return
+  async function deploy() {
+    if (!draft || pending) return
     if (!canCreateFreeProject) {
       router.push("/upgrade")
       return
@@ -64,10 +64,19 @@ function ConfigureInner() {
       branch,
       region: "lagos-edge" as const,
       simulateFailure: forceFail,
+      buildCommand,
+      outputDirectory,
     }
-    setDraft(nextDraft)
-    const project = createProject({ ...nextDraft, fail: false })
-    router.push(`/deploy/${project.id}${forceFail ? "?fail=1" : ""}`)
+    setPending(true)
+    setError(null)
+    try {
+      await setDraft(nextDraft)
+      const project = await createProject(nextDraft)
+      router.push(`/deploy/${project.id}${forceFail ? "?fail=1" : ""}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not create the project")
+      setPending(false)
+    }
   }
 
   if (!draft) return null
@@ -165,13 +174,14 @@ function ConfigureInner() {
             Free includes 1 project. Upgrade to Pro to deploy another.
           </Surface>
         ) : null}
+        {error ? <p className="text-[13px] text-destructive">{error}</p> : null}
 
         <div className="flex items-center gap-2 pt-1">
           <Button type="button" variant="outline" onClick={() => router.push("/connect")}>
             Back
           </Button>
           {canCreateFreeProject ? (
-            <Button type="button" onClick={deploy} disabled={!name.trim()}>
+            <Button type="button" onClick={() => void deploy()} disabled={!name.trim() || pending}>
               Deploy free
             </Button>
           ) : (

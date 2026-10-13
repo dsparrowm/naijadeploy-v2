@@ -23,7 +23,7 @@ export default function PaymentSuccessPage() {
 
 function SuccessInner() {
   const searchParams = useSearchParams()
-  const { upgradeToPro, plan, consumePendingCheckout, projects, invoices } = useAppStore()
+  const { confirmPayment, plan, projects, invoices } = useAppStore()
   const [status, setStatus] = useState<"pending" | "ok" | "error">("pending")
   const [copied, setCopied] = useState(false)
   const reference = searchParams.get("reference") || searchParams.get("trxref") || ""
@@ -44,30 +44,9 @@ function SuccessInner() {
         return
       }
 
-      if (demoCheckout) {
-        if (consumePendingCheckout(reference)) {
-          upgradeToPro(reference)
-          if (!cancelled) setStatus("ok")
-        } else {
-          if (!cancelled) setStatus("error")
-        }
-        return
-      }
-
       try {
-        const response = await fetch(`/api/paystack/verify?reference=${encodeURIComponent(reference)}`)
-        if (!response.ok) {
-          if (!cancelled) setStatus("error")
-          return
-        }
-        const payload = (await response.json()) as { status?: string }
-        if (cancelled) return
-        if (payload.status === "success") {
-          upgradeToPro(reference)
-          setStatus("ok")
-        } else {
-          setStatus("error")
-        }
+        const result = await confirmPayment(reference, demoCheckout ? "demo" : "paystack")
+        if (!cancelled) setStatus(result)
       } catch {
         if (!cancelled) setStatus("error")
       }
@@ -76,7 +55,7 @@ function SuccessInner() {
     return () => {
       cancelled = true
     }
-  }, [reference, demoCheckout, upgradeToPro, consumePendingCheckout])
+  }, [reference, demoCheckout, confirmPayment])
 
   async function copyUrl() {
     if (!liveProject) return
