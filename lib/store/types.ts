@@ -3,9 +3,11 @@ import type { DeployStageId } from "@/lib/deploy/types"
 export type PlanId = "free" | "pro"
 
 export type User = {
+  id: string
   email: string
   name: string
   twoFactorEnabled: boolean
+  image?: string | null
 }
 
 export type ProjectStatus =

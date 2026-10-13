@@ -9,6 +9,8 @@ import {
   useState,
   useSyncExternalStore,
 } from "react"
+import { setTwoFactorEnabled } from "@/lib/actions/account"
+import { authClient } from "@/lib/auth-client"
 import { FREE_PLAN, PRO_PLAN, projectUrl, toSlug } from "@/lib/config"
 import { findRepo } from "@/lib/mock/repos"
 import { seedOverviewProjects } from "@/lib/mock/projects"
@@ -72,10 +74,8 @@ function getServerSnapshot(): AppState {
 
 type AppStore = AppState & {
   ready: boolean
-  signup: (input: { name: string; email: string }) => void
-  login: (input: { email: string }) => void
-  logout: () => void
-  setTwoFactor: (enabled: boolean) => void
+  logout: () => Promise<void>
+  setTwoFactor: (enabled: boolean) => Promise<void>
   setResetEmail: (email: string) => void
   setDraft: (draft: DraftDeploy | null) => void
   setPendingCheckoutRef: (reference: string | null) => void
@@ -91,50 +91,40 @@ type AppStore = AppState & {
 
 const AppStoreContext = createContext<AppStore | null>(null)
 
-export function AppStoreProvider({ children }: { children: React.ReactNode }) {
+export function AppStoreProvider({
+  sessionUser,
+  children,
+}: {
+  sessionUser: User | null
+  children: React.ReactNode
+}) {
   const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
   const [ready, setReady] = useState(false)
+  const sessionKey = sessionUser
+    ? `${sessionUser.id}:${sessionUser.email}:${sessionUser.name}:${sessionUser.twoFactorEnabled}`
+    : ""
 
   useEffect(() => {
     try {
-      persist(readStorage())
+      const stored = readStorage()
+      const projects = stored.projects.length > 0 ? stored.projects : sessionUser ? seedOverviewProjects() : []
+      persist({ ...stored, user: sessionUser, projects })
     } catch (error) {
       console.error("session hydrate failed", error)
     } finally {
       setReady(true)
     }
-  }, [])
+  }, [sessionKey, sessionUser])
 
-  const signup = useCallback((input: { name: string; email: string }) => {
-    const user: User = {
-      name: input.name.trim(),
-      email: input.email.trim().toLowerCase(),
-      twoFactorEnabled: false,
-    }
-    persist({ ...getSnapshot(), user, resetEmail: null })
-  }, [])
-
-  const login = useCallback((input: { email: string }) => {
-    const email = input.email.trim().toLowerCase()
-    const prev = getSnapshot()
-    const user: User =
-      prev.user?.email === email
-        ? prev.user
-        : { name: email.split("@")[0] || "Developer", email, twoFactorEnabled: false }
-    persist({
-      ...prev,
-      user,
-      projects: prev.projects.length > 0 ? prev.projects : seedOverviewProjects(),
-    })
-  }, [])
-
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await authClient.signOut()
     persist({ ...getSnapshot(), user: null, draft: null })
   }, [])
 
-  const setTwoFactor = useCallback((enabled: boolean) => {
+  const setTwoFactor = useCallback(async (enabled: boolean) => {
     const prev = getSnapshot()
     if (!prev.user) return
+    await setTwoFactorEnabled(enabled)
     persist({ ...prev, user: { ...prev.user, twoFactorEnabled: enabled } })
   }, [])
 
@@ -272,8 +262,6 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     () => ({
       ...state,
       ready,
-      signup,
-      login,
       logout,
       setTwoFactor,
       setResetEmail,
@@ -291,8 +279,6 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     [
       state,
       ready,
-      signup,
-      login,
       logout,
       setTwoFactor,
       setResetEmail,

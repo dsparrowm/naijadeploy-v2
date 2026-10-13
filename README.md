@@ -23,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - Payment provider: Paystack (`lib/payments`). Thin `PaymentProvider` interface for a later rail. Flutterwave is not implemented.
 - Databases: sidebar **Coming soon** only.
 - Refer & Earn: out of scope — not scaffolded.
-- Auth and the deploy pipeline are session/UI stubs so the path works end-to-end without GitHub or a host. `{project}.naijadeploy.app` is a **demo/stub URL**, not live hosting — labeled with a Demo chip.
+- Auth is Better Auth: email and password, plus GitHub OAuth when `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` are set. The deploy pipeline is still a stub. `{project}.naijadeploy.app` is a **demo/stub URL**, not live hosting — labeled with a Demo chip.
 
 ## Local database and auth
 
@@ -59,10 +59,10 @@ Without keys, **Upgrade → Pay ₦7,500 with Paystack** opens an in-app demo ch
 
 ## Routes
 
-- Auth: `/signup` `/login` `/2fa` (skippable) `/forgot-password` `/check-email`
+- Auth: `/signup` `/login` `/2fa` (skippable) `/forgot-password` `/check-email` `/reset-password`
 - Deploy: `/connect` `/deploy/configure` `/deploy/[id]` `/deploy/[id]/live` `/deploy/[id]/failed`
 - Billing: `/upgrade` `/checkout` `/payment/success` `/payment/failed` `/billing`
 - Shell: `/dashboard` `/domains` `/settings`
 - Force a failed deploy from configure: `/deploy/configure?fail=1`
 
-Session state is stored in `localStorage` (`naijadeploy.session.v1`).
+The account session is a Better Auth cookie. Projects, plan, and the deploy draft still use `localStorage` (`naijadeploy.session.v1`) until they move to Postgres. Dashboard, billing, domains, settings, connect, deploy, upgrade, checkout, and payment routes require a session.
